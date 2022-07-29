@@ -3,7 +3,7 @@ import assert from 'assert';
 
 const runTests = true;
 
-const gridMaxWidth = 12; // 5
+const gridMaxWidth = 5; // 5
 const gridMaxHeight = 21; // 21
 
 export const gridDetails = {
