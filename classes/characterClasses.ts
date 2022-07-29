@@ -1,4 +1,4 @@
-import { aptitudes, cooldowns, ranges } from "@/lib/constants/constants";
+import { aptitudes, cooldowns, ranges } from '@/lib/constants/constants';
 
 let currentId = 0;
 
@@ -16,9 +16,9 @@ function getAttack(actor: Enemy): Function {
   function dummy() {
     console.log(
       actor.aptitude +
-        " is attacking " +
+        ' is attacking ' +
         actor.target.aptitude +
-        " if in range " +
+        ' if in range ' +
         range
     );
   }
@@ -37,7 +37,7 @@ function getAttack(actor: Enemy): Function {
 
 function getMove(actor: Enemy) {
   function dummy() {
-    console.log(actor.aptitude + " is moving " + actor.target.aptitude);
+    console.log(actor.aptitude + ' is moving ' + actor.target.aptitude);
   }
 
   switch (actor.aptitude) {
