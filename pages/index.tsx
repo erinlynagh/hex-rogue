@@ -54,7 +54,7 @@ const Home: NextPage = () => {
         enemy.takeTurn();
       });
     }
-  }, [turns]);
+  }, [turns, enemies]);
 
   useEffect(() => {
     setEnemies(allEnemies[depth]);
