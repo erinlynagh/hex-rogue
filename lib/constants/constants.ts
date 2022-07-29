@@ -1,4 +1,19 @@
 import { Character, Enemy } from '@/classes/characterClasses';
+import assert from 'assert';
+
+const gridMaxWidth = 5; // 5
+const gridMaxHeight = 21; // 21
+
+assert(gridMaxWidth >= 3, 'gridMaxWidth must be at least 3');
+assert(gridMaxHeight >= 3, 'gridMaxHeight must be at least 3');
+assert(gridMaxWidth % 2 === 1, 'gridMaxWidth must be an odd number');
+assert(gridMaxHeight % 2 === 1, 'gridMaxHeight must be an odd number');
+
+export const gridDetails = {
+  maxHeight: gridMaxHeight,
+  maxWidth: gridMaxWidth,
+  steps: gridMaxWidth - 2 < 0 ? 0 : gridMaxWidth - 2
+};
 
 export const ascii = {
   spartan: '@',

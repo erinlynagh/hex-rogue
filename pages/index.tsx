@@ -5,27 +5,11 @@ import Image from 'next/image';
 import styles from '@/styles/Home.module.css';
 import { you, allEnemies, ascii } from '@/lib/constants/constants';
 import { Character, Enemy } from '@/classes/characterClasses';
-
-function constructGrid(): number[] {
-  const maxHeight = 21;
-  const maxWidth = 5;
-  let rowLengths = [];
-  const steps = 4;
-  for (let i = 0; i <= maxHeight; i++) {
-    if (i <= maxHeight - steps) {
-      const calcRowLength = i;
-      calcRowLength > maxWidth
-        ? rowLengths.push(i % 2 === 1 ? maxWidth : maxWidth - 1)
-        : rowLengths.push(calcRowLength);
-    } else {
-      const calcRowLength = maxHeight - i + 1;
-      calcRowLength > maxWidth
-        ? rowLengths.push(maxWidth)
-        : rowLengths.push(calcRowLength);
-    }
-  }
-  return rowLengths; //79 cells
-}
+import { checkTilesLib } from 'components/Hex/CheckTiles';
+import {
+  constructGridArray,
+  ConstructGridLib
+} from 'components/Hex/ConstructGrid';
 
 const Home: NextPage = () => {
   const [turns, setTurns] = React.useState(0);
@@ -34,8 +18,6 @@ const Home: NextPage = () => {
   const [enemies, setEnemies] = React.useState<Enemy[]>(allEnemies[0]);
   const [projectionType, setProjectionType] = React.useState(0);
   const [activeTiles, setActiveTiles] = React.useState<string[]>([]);
-
-  console.log(activeTiles);
 
   function HandleActiveTiles(tile: string) {
     if (activeTiles.includes(tile)) {
@@ -56,7 +38,7 @@ const Home: NextPage = () => {
     setEnemies(allEnemies[depth]);
   }, [depth]);
 
-  function descend() {
+  function Descend() {
     console.log('descending to level ' + (depth + 1));
     console.log('total turns: ' + (totalTurns + turns));
     setTotalTurns(totalTurns + turns);
@@ -64,68 +46,22 @@ const Home: NextPage = () => {
     setDepth(depth + 1);
   }
 
-  const gridRows = constructGrid();
+  function ConstructHexGrid(): React.ReactNode {
+    return ConstructGridLib(
+      projectionType,
+      gridRows,
+      activeTiles,
+      HandleActiveTiles,
+      checkTilesLib,
+      depth
+    );
+  }
+
+  const gridRows = constructGridArray();
   const baseButton = 'rounded-lg px-2 py-1';
   const blueButton =
     baseButton +
     ' text-white bg-blue-700 border-blue-700 hover:bg-blue-500 hover:border-blue-500';
-
-  function checkTile(i: number, j: number) {
-    let char = '';
-    if (you.position.x === j && you.position.y === i) {
-      char = ascii.spartan;
-    } else {
-      allEnemies[depth].forEach(enemy => {
-        if (enemy.position.x === j && enemy.position.y === i) {
-          char = ascii[enemy.aptitude as keyof typeof ascii];
-        }
-      });
-    }
-    return char;
-  }
-
-  function ConstructGridElement(gridRows: number[]) {
-    const hexBaseClass = '';
-    const rowClassTrue = 'flex flex-row align-center';
-    const hexClassTrue =
-      'w-10 h-10 rounded-full text-center flex flex-col justify-center align-center';
-    const rowClass = 'flex flex-row justify-center align-center gap-12';
-    const hexClass = hexClassTrue + ' my-[-8.5px]';
-    const hexClassActive = 'bg-green-800 hover:bg-green-400 text-white';
-    const hexClassInactive =
-      'bg-slate-800 hover:bg-slate-400 text-white hover:text-black';
-    return (
-      <div className="flex flex-col content-center">
-        {[...Array(gridRows.length - 1)].map((x, i) => {
-          return (
-            <div
-              className={projectionType === 0 ? rowClass : rowClassTrue}
-              key={i}
-            >
-              {[...Array(gridRows[i + 1])].map((x, j) => {
-                return (
-                  <div
-                    key={i + ', ' + j}
-                    id={'hex-x-' + j + '-y-' + i}
-                    className={
-                      (projectionType === 0 ? hexClass : hexClassTrue) +
-                      ' ' +
-                      (activeTiles.includes('hex-x-' + j + '-y-' + i)
-                        ? hexClassActive
-                        : hexClassInactive)
-                    }
-                    onClick={() => HandleActiveTiles('hex-x-' + j + '-y-' + i)}
-                  >
-                    <p style={{ userSelect: 'none' }}>{checkTile(i, j)}</p>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
 
   return (
     <div className="bg-black">
@@ -136,9 +72,9 @@ const Home: NextPage = () => {
       </Head>
       <main className={styles.main}>
         <div className="flex flex-col gap-4">
-          {ConstructGridElement(gridRows)}
+          {ConstructHexGrid()}
           <div className="flex justify-evenly mt-[8px]">
-            <input type={'button'} className={blueButton} value={'Bash'} />
+            <input type={'button'} value={'Bash'} className={blueButton} />
             <input type={'button'} value={'Hop'} className={blueButton} />
             <input type={'button'} value={'Throw'} className={blueButton} />
           </div>
@@ -153,7 +89,7 @@ const Home: NextPage = () => {
               type={'button'}
               value={'Descend'}
               className={blueButton}
-              onClick={() => descend()}
+              onClick={() => Descend()}
             />
           </div>
           <label className="text-white flex gap-2 justify-center">
@@ -166,6 +102,12 @@ const Home: NextPage = () => {
               <option value={1}>True</option>
             </select>
           </label>
+          <input
+            type={'button'}
+            value={'Reset Tiles'}
+            className={blueButton}
+            onClick={() => setActiveTiles([])}
+          />
         </div>
       </main>
     </div>
