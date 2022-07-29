@@ -63,13 +63,11 @@ const Home: NextPage = () => {
         enemy.takeTurn();
       });
     }
-  }),
-    [turns];
+  }, [turns]);
 
   useEffect(() => {
     setEnemies(allEnemies[depth]);
-  }),
-    [depth];
+  }, [depth]);
 
   function descend() {
     console.log('descending to level ' + (depth + 1));
