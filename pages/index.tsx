@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '@/styles/Home.module.css';
-import { you, allEnemies } from '@/lib/constants/constants';
+import { you, allEnemies, ascii } from '@/lib/constants/constants';
 import { Character, Enemy } from '@/classes/characterClasses';
 
 function constructGrid(): number[] {
@@ -11,7 +11,7 @@ function constructGrid(): number[] {
   const maxWidth = 5;
   let rowLengths = [];
   const steps = 4;
-  for (let i = 1; i <= maxHeight; i++) {
+  for (let i = 0; i <= maxHeight; i++) {
     if (i <= maxHeight - steps) {
       const calcRowLength = i;
       calcRowLength > maxWidth
@@ -25,32 +25,6 @@ function constructGrid(): number[] {
     }
   }
   return rowLengths;
-}
-
-function ConstructGridElement(gridRows: number[]) {
-  return (
-    <div className="flex flex-col content-center">
-      {[...Array(gridRows.length)].map((x, i) => {
-        return (
-          <div
-            className="flex flex-row justify-center
-           align-center gap-12"
-          >
-            {[...Array(gridRows[i])].map((x, i) => {
-              return (
-                <div
-                  key={i}
-                  className="bg-slate-800 border-50 w-10 h-10 rounded-full hover:bg-slate-400 text-center flex flex-col justify-center align-center text-white hover:text-black my-[-8.5px]"
-                >
-                  $
-                </div>
-              );
-            })}
-          </div>
-        );
-      })}
-    </div>
-  );
 }
 
 const Home: NextPage = () => {
@@ -85,6 +59,49 @@ const Home: NextPage = () => {
     baseButton +
     ' text-white bg-blue-700 border-blue-700 hover:bg-blue-500 hover:border-blue-500';
 
+  function checkTile(i: number, j: number) {
+    let char = '';
+    if (you.position.x === j && you.position.y === i) {
+      char = ascii.spartan;
+    } else {
+      allEnemies[depth].forEach(enemy => {
+        if (enemy.position.x === j && enemy.position.y === i) {
+          char = ascii[enemy.aptitude as keyof typeof ascii];
+        }
+      });
+    }
+    return char;
+  }
+
+  function ConstructGridElement(gridRows: number[]) {
+    // const rowClassOld = 'flex flex-row justify-center align-center';
+    // const hexClassOld = 'bg-slate-800 border-50 w-10 h-10 rounded-full hover:bg-slate-400 text-center flex flex-col justify-center align-center text-white hover:text-black';
+    const rowClass = 'flex flex-row justify-center align-center gap-12';
+    const hexClass =
+      'bg-slate-800 w-10 h-10 rounded-full hover:bg-slate-400 text-center flex flex-col justify-center align-center text-white hover:text-black my-[-8.5px]';
+    return (
+      <div className="flex flex-col content-center">
+        {[...Array(gridRows.length - 1)].map((x, i) => {
+          return (
+            <div className={rowClass} key={i}>
+              {[...Array(gridRows[i + 1])].map((x, j) => {
+                return (
+                  <div
+                    key={i + ', ' + j}
+                    id={'hex-row-' + i + '-col-' + j}
+                    className={hexClass}
+                  >
+                    <p style={{ userSelect: 'none' }}>{checkTile(i, j)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div className="bg-black">
       <Head>
@@ -95,12 +112,12 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <div className="flex flex-col gap-4">
           {ConstructGridElement(gridRows)}
-          <div className="flex justify-evenly mt-[8px] gap-1">
+          <div className="flex justify-evenly mt-[8px]">
             <input type={'button'} className={blueButton} value={'Bash'} />
             <input type={'button'} value={'Hop'} className={blueButton} />
             <input type={'button'} value={'Throw'} className={blueButton} />
           </div>
-          <div className="flex justify-evenly gap-1">
+          <div className="flex justify-center gap-5">
             <input
               type={'button'}
               className={blueButton}
