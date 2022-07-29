@@ -4,7 +4,7 @@ import assert from 'assert';
 export const debug = true; //process.env.NEXT_PUBLIC_DEBUG === '1';
 const runTests = process.env.NEXT_PUBLIC_RUN_TESTS === '1';
 
-const gridMaxWidth = 3; // 5
+const gridMaxWidth = 5; // 5
 const gridMaxHeight = 21; // 21
 const effectiveMaxWidth =
   gridMaxWidth > gridMaxHeight / 2

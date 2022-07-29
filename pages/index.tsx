@@ -1,74 +1,14 @@
 import React, { useEffect } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
-import styles from '@/styles/Home.module.css';
-import {
-  you,
-  allEnemies,
-  ascii,
-  debug,
-  gridDetails
-} from '@/lib/constants/constants';
-import { Character, Enemy } from '@/classes/characterClasses';
+import { allEnemies, debug, gridDetails } from '@/lib/constants/constants';
+import { Enemy } from '@/classes/characterClasses';
 import { checkTilesLib } from 'components/Hex/CheckTiles';
 import {
   constructGridArray,
   ConstructGridLib
 } from 'components/Hex/ConstructGrid';
-
-function getTileCoordinateNumbers(tile: string) {
-  const tileX = parseInt(tile.split('-')[0].split('x')[1]);
-  const tileY = parseInt(tile.split('-')[1].split('y')[1]);
-  return { tileX, tileY };
-}
-
-function getTileCoordinateString(x: number, y: number) {
-  return 'x' + x + '-y' + y;
-}
-
-/**
- * [0, 2], 0 --> 2 =
- * [0, 1], 0 --> 3 =
- * [1, 2], 1 --> 4 =
- * [0, 0], 0 --> 4 =
- * [1, 1], 1 --> 5 =
- * [2, 2], 2 --> 6 =
- * maxHeight = 21
- * maxWidth = 5
- * ()
- */
-
-function getTileVerticalPosition(
-  x: number,
-  y: number,
-  gridRows: number[]
-): number {
-  let position: number = -1;
-
-  const inSteps =
-    y < gridDetails.steps || y >= gridDetails.maxHeight - gridDetails.steps;
-  if (inSteps) {
-    if (y >= gridDetails.maxHeight - gridDetails.steps) {
-      position =
-        y - (gridDetails.maxHeight - gridDetails.maxWidth) + x + gridRows[x];
-    } else {
-      position =
-        gridDetails.maxHeight -
-        (1 + y) -
-        (gridDetails.maxHeight - gridDetails.maxWidth) +
-        x +
-        gridRows[x];
-    }
-  } else if (!inSteps) {
-    for (let i = 0; i < gridDetails.maxWidth; i++) {
-      if (i === x) {
-        position = 2 * i + (y % 2);
-      }
-    }
-  }
-  return position;
-}
+import { getTilesInLineOfSight } from '@/lib/hex-line-of-sight/hexCalcLib';
 
 const Home: NextPage = () => {
   const [gridRows, setGridRows] = React.useState<number[]>([]);
@@ -80,30 +20,6 @@ const Home: NextPage = () => {
   const [activeTiles, setActiveTiles] = React.useState<string[]>([]);
   const [debugMode, setDebugMode] = React.useState(0);
 
-  function getTilesAbove(x: number, y: number) {
-    let tilesAbove: string[] = [];
-    let tileVerticalPosition = getTileVerticalPosition(x, y, gridRows);
-    console.log('tileVerticalPosition', tileVerticalPosition);
-    for (let i = 0; i < gridDetails.maxHeight; i++) {
-      for (let j = 0; j < gridDetails.maxWidth; j++) {
-        if (tileVerticalPosition === getTileVerticalPosition(j, i, gridRows)) {
-          tilesAbove.push(getTileCoordinateString(j, i));
-        }
-      }
-    }
-    return tilesAbove;
-  }
-
-  function getTilesInLineOfSight(tile: string) {
-    let tilesInLineOfSight: string[] = [];
-    const { tileX, tileY } = getTileCoordinateNumbers(tile);
-    tilesInLineOfSight.push(getTileCoordinateString(tileX, tileY));
-    tilesInLineOfSight.push(...getTilesAbove(tileX, tileY));
-    //getTilesBelow
-
-    return tilesInLineOfSight;
-  }
-
   function HandleActiveTiles(tile: string): void {
     console.log(tile);
     if (debugMode === 0) {
@@ -113,7 +29,7 @@ const Home: NextPage = () => {
         setActiveTiles([...activeTiles, tile]);
       }
     } else if (debugMode === 1) {
-      let y = getTilesInLineOfSight(tile);
+      let y = getTilesInLineOfSight(gridDetails, gridRows, tile);
       setActiveTiles(y);
     }
   }
@@ -140,6 +56,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     setGridRows(constructGridArray());
     console.log(gridDetails);
+    console.log(gridRows);
   }, []);
 
   useEffect(() => {
@@ -166,7 +83,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Simple Hex Based Roguelike" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
+      <main className="min-h-screen w-full pt-10 justify-center flex">
         <div className="flex flex-col gap-4 text-white text-center">
           {ConstructHexGrid()}
           <div className="flex justify-evenly mt-[8px]">
