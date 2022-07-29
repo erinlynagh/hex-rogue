@@ -113,7 +113,7 @@ const Home: NextPage = () => {
                 <select
                   className="bg-slate-900"
                   onChange={e => {
-                    //setProjectionType(0);
+                    setProjectionType(0);
                     setDebugMode(parseInt(e.target.value));
                   }}
                 >
