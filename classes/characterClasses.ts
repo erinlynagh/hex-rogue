@@ -15,11 +15,7 @@ function getAttack(actor: Enemy): Function {
 
   function dummy() {
     console.log(
-      actor.aptitude +
-        ' is attacking ' +
-        actor.target.aptitude +
-        ' if in range ' +
-        range
+      `${actor.aptitude} is attacking ${actor.target.aptitude} if in range ${range.min} to ${range.max}`
     );
   }
 

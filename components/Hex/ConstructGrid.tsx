@@ -53,7 +53,7 @@ export function ConstructGridLib(
             key={i}
           >
             {[...Array(gridRows[i + 1])].map((x, j) => {
-              const hexPositionId = 'hex-x-' + j + '-y-' + i;
+              const hexPositionId = 'x' + j + '-y' + i;
               const isActive = activeTiles.includes(hexPositionId);
               return (
                 <div

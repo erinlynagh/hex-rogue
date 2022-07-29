@@ -35,10 +35,10 @@ export const cooldowns = {
 };
 
 export const ranges = {
-  spartan: 1,
-  knight: 1,
-  wizard: 6,
-  archer: 6
+  spartan: { min: 1, max: 1 },
+  knight: { min: 1, max: 1 },
+  wizard: { min: 1, max: 5 },
+  archer: { min: 2, max: 5 }
 };
 
 // y 12 seems like a good cutoff for enemy spawns
