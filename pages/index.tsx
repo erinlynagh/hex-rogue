@@ -12,8 +12,7 @@ import {
 } from 'components/Hex/ConstructGrid';
 
 const Home: NextPage = () => {
-  const gridRows = constructGridArray();
-
+  const [gridRows, setGridRows] = React.useState<number[]>([]);
   const [turns, setTurns] = React.useState(0);
   const [totalTurns, setTotalTurns] = React.useState(0);
   const [depth, setDepth] = React.useState(0);
@@ -47,6 +46,10 @@ const Home: NextPage = () => {
       depth
     );
   }
+
+  useEffect(() => {
+    setGridRows(constructGridArray());
+  }, []);
 
   useEffect(() => {
     if (turns > 0) {

@@ -20,7 +20,6 @@ export function constructGridArray(): number[] {
         : rowLengths.push(calcRowLength);
     }
   }
-  console.log(rowLengths);
   return rowLengths; //79 cells
 }
 
@@ -42,6 +41,9 @@ export function ConstructGridLib(
     'bg-slate-800 hover:bg-slate-400 text-white hover:text-black';
 
   const showInGameProjection = projectionType === 0;
+  if (gridRows.length === 0) {
+    return <></>;
+  }
   return (
     <div className="flex flex-col content-center">
       {[...Array(gridRows.length - 1)].map((x, i) => {
@@ -51,16 +53,17 @@ export function ConstructGridLib(
             key={i}
           >
             {[...Array(gridRows[i + 1])].map((x, j) => {
-              const isActive = activeTiles.includes('hex-x-' + j + '-y-' + i);
+              const hexPositionId = 'hex-x-' + j + '-y-' + i;
+              const isActive = activeTiles.includes(hexPositionId);
               return (
                 <div
                   key={i + ', ' + j}
-                  id={'hex-x-' + j + '-y-' + i}
+                  id={hexPositionId}
                   className={
                     (showInGameProjection ? hexClass : hexClassTrue) +
                     (isActive ? hexClassActive : hexClassInactive)
                   }
-                  onClick={() => HandleActiveTiles('hex-x-' + j + '-y-' + i)}
+                  onClick={() => HandleActiveTiles(hexPositionId)}
                 >
                   <p style={{ userSelect: 'none' }}>{checkTile(i, j, depth)}</p>
                 </div>
