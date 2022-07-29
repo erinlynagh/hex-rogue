@@ -41,7 +41,7 @@ export const ranges = {
 };
 
 // y 12 seems like a good cutoff for enemy spawns
-// don't spawn in the middle for x
+// don't spawn in the middle of your row for x, this only matters is y is even
 
 export const you = new Character(aptitudes.spartan, { x: 1, y: 18 });
 const archer = new Enemy(aptitudes.archer, { x: 1, y: 8 }, you);
