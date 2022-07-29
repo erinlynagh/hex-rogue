@@ -4,13 +4,17 @@ import assert from 'assert';
 export const debug = true; //process.env.NEXT_PUBLIC_DEBUG === '1';
 const runTests = process.env.NEXT_PUBLIC_RUN_TESTS === '1';
 
-const gridMaxWidth = 5; // 5
+const gridMaxWidth = 3; // 5
 const gridMaxHeight = 21; // 21
+const effectiveMaxWidth =
+  gridMaxWidth > gridMaxHeight / 2
+    ? Math.ceil(gridMaxHeight / 2)
+    : gridMaxWidth;
 
 export const gridDetails = {
   maxHeight: gridMaxHeight,
-  maxWidth: gridMaxWidth,
-  steps: gridMaxWidth - 2 < 0 ? 0 : gridMaxWidth - 2
+  maxWidth: effectiveMaxWidth,
+  steps: effectiveMaxWidth - 2 < 0 ? 0 : effectiveMaxWidth - 2
 };
 
 export const ascii = {
@@ -61,12 +65,7 @@ if (runTests) {
   assert(gridMaxWidth >= 3, 'gridMaxWidth must be at least 3');
   assert(gridMaxHeight >= 3, 'gridMaxHeight must be at least 3');
   assert(gridMaxHeight % 2 === 1, 'gridMaxHeight must be an odd number');
-  if (gridMaxWidth % 2 === 0) {
-    assert(
-      Math.ceil(gridMaxHeight / 2) < gridMaxWidth,
-      'gridMaxHeight must be LESS than double than gridMaxWidth'
-    );
-  }
+  assert(gridMaxWidth % 2 === 1, 'gridMaxWidth must be an odd number');
 
   // test spartan
   assert(you.position.x === 1, 'you.position.x must be 1');

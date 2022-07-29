@@ -27,18 +27,49 @@ function getTileCoordinateString(x: number, y: number) {
   return 'x' + x + '-y' + y;
 }
 
-const middle = [
-  [0, 20],
-  [1, 18],
-  [2, 16],
-  [2, 14],
-  [2, 12],
-  [2, 8],
-  [2, 6],
-  [2, 4],
-  [1, 2],
-  [0, 0]
-];
+/**
+ * [0, 2], 0 --> 2 =
+ * [0, 1], 0 --> 3 =
+ * [1, 2], 1 --> 4 =
+ * [0, 0], 0 --> 4 =
+ * [1, 1], 1 --> 5 =
+ * [2, 2], 2 --> 6 =
+ * maxHeight = 21
+ * maxWidth = 5
+ * ()
+ */
+
+function getTileVerticalPosition(
+  x: number,
+  y: number,
+  gridRows: number[]
+): number {
+  let position: number = -1;
+
+  const inSteps =
+    y < gridDetails.steps || y >= gridDetails.maxHeight - gridDetails.steps;
+  if (inSteps) {
+    if (y >= gridDetails.maxHeight - gridDetails.steps) {
+      position =
+        y - (gridDetails.maxHeight - gridDetails.maxWidth) + x + gridRows[x];
+    } else {
+      position =
+        gridDetails.maxHeight -
+        (1 + y) -
+        (gridDetails.maxHeight - gridDetails.maxWidth) +
+        x +
+        gridRows[x];
+    }
+  } else if (!inSteps) {
+    for (let i = 0; i < gridDetails.maxWidth; i++) {
+      if (i === x) {
+        position = 2 * i + (y % 2);
+      }
+    }
+  }
+  return position;
+}
+
 const Home: NextPage = () => {
   const [gridRows, setGridRows] = React.useState<number[]>([]);
   const [turns, setTurns] = React.useState(0);
@@ -51,57 +82,15 @@ const Home: NextPage = () => {
 
   function getTilesAbove(x: number, y: number) {
     let tilesAbove: string[] = [];
-    // if you are already at the top
-    if (y === 0 || (x === 0 && y <= gridDetails.steps + 1) || x === y) {
-      console.log('topmost');
-      return tilesAbove;
+    let tileVerticalPosition = getTileVerticalPosition(x, y, gridRows);
+    console.log('tileVerticalPosition', tileVerticalPosition);
+    for (let i = 0; i < gridDetails.maxHeight; i++) {
+      for (let j = 0; j < gridDetails.maxWidth; j++) {
+        if (tileVerticalPosition === getTileVerticalPosition(j, i, gridRows)) {
+          tilesAbove.push(getTileCoordinateString(j, i));
+        }
+      }
     }
-
-    let position: number = -1;
-    console.log(gridDetails.maxHeight - 1 - gridDetails.steps);
-    const inSteps =
-      y < gridDetails.steps || y >= gridDetails.maxHeight - gridDetails.steps;
-    console.log(inSteps);
-    if (x === 0) {
-      if (!inSteps && y % 2 === 0) {
-        position = 0;
-      } else if (inSteps) {
-        position = 5 - (gridDetails.maxHeight - y);
-      } else {
-        position = 1;
-      }
-    } else if (!inSteps) {
-      if (x === 0 && y % 2 === 0) {
-        position = 0;
-      } else if (x === 0 && y % 2 === 1) {
-        position = 1;
-      } else if (x === gridDetails.maxWidth - 4 && y % 2 === 0) {
-        position = 2;
-      } else if (x === gridDetails.maxWidth - 4 && y % 2 === 1) {
-        position = 3;
-      } else if (x === gridDetails.maxWidth - 3 && y % 2 === 0) {
-        position = 4;
-      } else if (x === gridDetails.maxWidth - 3 && y % 2 === 1) {
-        position = 5;
-      } else if (x === gridDetails.maxWidth - 2 && y % 2 === 0) {
-        position = 6;
-      } else if (x === gridDetails.maxWidth - 2 && y % 2 === 1) {
-        position = 7;
-      } else if (x === gridDetails.maxWidth - 1 && y % 2 === 0) {
-        position = 8;
-      }
-    } else if (inSteps) {
-      let compare = gridRows.length - 2 - 2 * x;
-      let compare2 = 2 * x;
-      if (y > gridDetails.steps) {
-        position = 4 - (compare - y);
-      } else {
-        position = 4;
-      }
-    } else if (x + 0.5 == gridDetails.maxWidth / 2 && y % 2 === 0) {
-      position = 4;
-    }
-    console.log(position);
     return tilesAbove;
   }
 
@@ -124,7 +113,8 @@ const Home: NextPage = () => {
         setActiveTiles([...activeTiles, tile]);
       }
     } else if (debugMode === 1) {
-      setActiveTiles([...activeTiles, ...getTilesInLineOfSight(tile)]);
+      let y = getTilesInLineOfSight(tile);
+      setActiveTiles(y);
     }
   }
 
