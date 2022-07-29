@@ -1,7 +1,8 @@
 import { Character, Enemy } from '@/classes/characterClasses';
 import assert from 'assert';
 
-const runTests = true;
+export const debug = process.env.NEXT_PUBLIC_DEBUG === '1';
+const runTests = process.env.NEXT_PUBLIC_RUN_TESTS === '1';
 
 const gridMaxWidth = 5; // 5
 const gridMaxHeight = 21; // 21

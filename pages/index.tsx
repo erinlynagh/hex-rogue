@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '@/styles/Home.module.css';
-import { you, allEnemies, ascii } from '@/lib/constants/constants';
+import { you, allEnemies, ascii, debug } from '@/lib/constants/constants';
 import { Character, Enemy } from '@/classes/characterClasses';
 import { checkTilesLib } from 'components/Hex/CheckTiles';
 import {
@@ -83,36 +83,40 @@ const Home: NextPage = () => {
             <input type={'button'} value={'Hop'} className={blueButton} />
             <input type={'button'} value={'Throw'} className={blueButton} />
           </div>
-          <div className="flex justify-center gap-5">
-            <input
-              type={'button'}
-              className={blueButton}
-              value={'End Turn'}
-              onClick={() => setTurns(turns + 1)}
-            />
-            <input
-              type={'button'}
-              value={'Descend'}
-              className={blueButton}
-              onClick={() => Descend()}
-            />
-          </div>
-          <label className="text-white flex gap-2 justify-center">
-            Projection Type:
-            <select
-              className="bg-slate-900"
-              onChange={e => setProjectionType(parseInt(e.target.value))}
-            >
-              <option value={0}>In Game</option>
-              <option value={1}>True</option>
-            </select>
-          </label>
-          <input
-            type={'button'}
-            value={'Reset Tiles'}
-            className={blueButton}
-            onClick={() => setActiveTiles([])}
-          />
+          {debug && (
+            <>
+              <div className="flex justify-center gap-5">
+                <input
+                  type={'button'}
+                  className={blueButton}
+                  value={'End Turn'}
+                  onClick={() => setTurns(turns + 1)}
+                />
+                <input
+                  type={'button'}
+                  value={'Descend'}
+                  className={blueButton}
+                  onClick={() => Descend()}
+                />
+              </div>
+              <label className="text-white flex gap-2 justify-center">
+                Projection Type:
+                <select
+                  className="bg-slate-900"
+                  onChange={e => setProjectionType(parseInt(e.target.value))}
+                >
+                  <option value={0}>In Game</option>
+                  <option value={1}>True</option>
+                </select>
+              </label>
+              <input
+                type={'button'}
+                value={'Reset Tiles'}
+                className={blueButton}
+                onClick={() => setActiveTiles([])}
+              />
+            </>
+          )}
         </div>
       </main>
     </div>
