@@ -52,29 +52,6 @@ function getTileVerticalPosition(
   return position;
 }
 
-// function getTilePositiveSkew(
-//   x: number,
-//   y: number,
-//   gridRows: number[],
-//   gridDetails: { maxHeight: number; maxWidth: number; steps: number }
-// ): number {
-//   let position = -1;
-//   for (let i = 0; i < gridDetails.maxWidth + 2 * gridDetails.steps; i++) {
-//     for (let j = 0; j <= i; j++) {
-//       let comp = 2 * (i - j) + 5;
-//       console.log('i,j:', i, j);
-//       console.log('comp', comp);
-//       console.log('x,y', x, y);
-//       if (x === j && y < comp) {
-//         console.log('final i: ', i);
-//         return i;
-//       }
-//     }
-//   }
-
-//   return position;
-// }
-
 function getTilePositiveSkew(
   x: number,
   y: number,
@@ -82,83 +59,113 @@ function getTilePositiveSkew(
   gridDetails: { maxHeight: number; maxWidth: number; steps: number }
 ): number {
   let position = -1;
-  if (x === 0 && y < 5) {
-    return 0;
-  } else if ((x === 0 && y < 7) || (x === 1 && y < 5)) {
-    return 1;
-  } else if ((x === 0 && y < 9) || (x === 1 && y < 7) || (x === 2 && y < 5)) {
-    return 2;
-  } else if (
-    (x === 0 && y < 11) ||
-    (x === 1 && y < 9) ||
-    (x === 2 && y < 7) ||
-    (x === 3 && y < 5)
+  for (
+    let i: number = 0;
+    i < gridDetails.maxWidth + 2 * gridDetails.steps;
+    i++
   ) {
-    return 3;
-  } else if (
-    (x === 0 && y < 13) ||
-    (x === 1 && y < 11) ||
-    (x === 2 && y < 9) ||
-    (x === 3 && y < 7) ||
-    (x === 4 && y < 5)
-  ) {
-    return 4;
-  } else if (
-    (x === 0 && y < 15) ||
-    (x === 1 && y < 13) ||
-    (x === 2 && y < 11) ||
-    (x === 3 && y < 9) ||
-    (x === 4 && y < 7)
-  ) {
-    return 5;
-  } else if (
-    (x === 0 && y < 17) ||
-    (x === 1 && y < 15) ||
-    (x === 2 && y < 13) ||
-    (x === 3 && y < 11) ||
-    (x === 4 && y < 9)
-  ) {
-    return 6;
-    //breaks down here, after 17 they only increase by 1
-  } else if (
-    (x === 0 && y < 18) ||
-    (x === 1 && y < 17) ||
-    (x === 2 && y < 15) ||
-    (x === 3 && y < 13) ||
-    (x === 4 && y < 11)
-  ) {
-    return 7;
-  } else if (
-    (x === 0 && y < 19) ||
-    (x === 1 && y < 18) ||
-    (x === 2 && y < 17) ||
-    (x === 3 && y < 15) ||
-    (x === 4 && y < 13)
-  ) {
-    return 8;
-  } else if (
-    (x === 0 && y < 20) ||
-    (x === 1 && y < 19) ||
-    (x === 2 && y < 18) ||
-    (x === 3 && y < 17) ||
-    (x === 4 && y < 15)
-  ) {
-    return 9;
-  } else if (
-    (x === 0 && y < 21) ||
-    (x === 1 && y < 20) ||
-    (x === 2 && y < 19) ||
-    (x === 3 && y < 18) ||
-    (x === 4 && y < 17)
-  ) {
-    return 10;
+    console.log('');
+    let max = i > gridDetails.maxWidth ? gridDetails.maxWidth : i;
+    for (let j: number = 0; j <= max; j++) {
+      console.log('i,j', i, j);
+      let comp = 2 * (i - j) + 5;
+      let triggerNumber = 19;
+      if (comp >= triggerNumber) {
+        comp -= 1 + (comp - triggerNumber) / 2;
+      }
+      console.log(comp);
+      if (x === j && y < comp) {
+        return i;
+      }
+    }
   }
+
   return position;
 }
 
+// function getTilePositiveSkew(
+//   x: number,
+//   y: number,
+//   gridRows: number[],
+//   gridDetails: { maxHeight: number; maxWidth: number; steps: number }
+// ): number {
+//   let position = -1;
+//   if (x === 0 && y < 5) {
+//     return 0;
+//   } else if ((x === 0 && y < 7) || (x === 1 && y < 5)) {
+//     return 1;
+//   } else if ((x === 0 && y < 9) || (x === 1 && y < 7) || (x === 2 && y < 5)) {
+//     return 2;
+//   } else if (
+//     (x === 0 && y < 11) ||
+//     (x === 1 && y < 9) ||
+//     (x === 2 && y < 7) ||
+//     (x === 3 && y < 5)
+//   ) {
+//     return 3;
+//   } else if (
+//     (x === 0 && y < 13) ||
+//     (x === 1 && y < 11) ||
+//     (x === 2 && y < 9) ||
+//     (x === 3 && y < 7) ||
+//     (x === 4 && y < 5)
+//   ) {
+//     return 4;
+//   } else if (
+//     (x === 0 && y < 15) ||
+//     (x === 1 && y < 13) ||
+//     (x === 2 && y < 11) ||
+//     (x === 3 && y < 9) ||
+//     (x === 4 && y < 7)
+//   ) {
+//     return 5;
+//   } else if (
+//     (x === 0 && y < 17) ||
+//     (x === 1 && y < 15) ||
+//     (x === 2 && y < 13) ||
+//     (x === 3 && y < 11) ||
+//     (x === 4 && y < 9)
+//   ) {
+//     return 6;
+//     breaks down here, after 17 they only increase by 1
+//   } else if (
+//     (x === 0 && y < 18) ||
+//     (x === 1 && y < 17) ||
+//     (x === 2 && y < 15) ||
+//     (x === 3 && y < 13) ||
+//     (x === 4 && y < 11)
+//   ) {
+//     return 7;
+//   } else if (
+//     (x === 0 && y < 19) ||
+//     (x === 1 && y < 18) ||
+//     (x === 2 && y < 17) ||
+//     (x === 3 && y < 15) ||
+//     (x === 4 && y < 13)
+//   ) {
+//     return 8;
+//   } else if (
+//     (x === 0 && y < 20) ||
+//     (x === 1 && y < 19) ||
+//     (x === 2 && y < 18) ||
+//     (x === 3 && y < 17) ||
+//     (x === 4 && y < 15)
+//   ) {
+//     return 9;
+//   } else if (
+//     (x === 0 && y < 21) ||
+//     (x === 1 && y < 20) ||
+//     (x === 2 && y < 19) ||
+//     (x === 3 && y < 18) ||
+//     (x === 4 && y < 17)
+//   ) {
+//     return 10;
+//   }
+//   return position;
+// }
+
 function getTileNegativeSkew(x: number, y: number, rowWidth: number): number {
   let position = -1;
-  console.log(x, y, rowWidth);
 
   if (x === y) {
     position = 0;
@@ -311,20 +318,20 @@ function getTilesPositive(
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTilePositiveSkew(x, y, gridRows, gridDetails);
   console.log('skew: ', tileVerticalPosition);
-  for (let i = y - range.max; i <= y + range.max; i++) {
-    for (let j = x - range.max; j <= x + range.max; j++) {
-      if (
-        tileVerticalPosition ===
-        getTilePositiveSkew(j, i, gridRows, gridDetails)
-      ) {
-        if (Math.abs(i - y) < range.min) {
-          continue;
-        }
+  // for (let i = y - range.max; i <= y + range.max; i++) {
+  //   for (let j = x - range.max; j <= x + range.max; j++) {
+  //     if (
+  //       tileVerticalPosition ===
+  //       getTilePositiveSkew(j, i, gridRows, gridDetails)
+  //     ) {
+  //       if (Math.abs(i - y) < range.min) {
+  //         continue;
+  //       }
 
-        tilesAbove.push(getTileCoordinateString(j, i));
-      }
-    }
-  }
+  //       tilesAbove.push(getTileCoordinateString(j, i));
+  //     }
+  //   }
+  // }
   return tilesAbove;
 }
 
@@ -337,7 +344,6 @@ function getTilesNegative(
 ) {
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTileNegativeSkew(x, y, gridRows[y + 1]);
-  console.log('line: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
       if (tileVerticalPosition === getTileNegativeSkew(j, i, gridRows[i + 1])) {
@@ -360,15 +366,15 @@ export function getTilesInLineOfSight(
   let tilesInLineOfSight: string[] = [];
   const { tileX, tileY } = getTileCoordinateNumbers(tile);
   tilesInLineOfSight.push(getTileCoordinateString(tileX, tileY));
-  tilesInLineOfSight.push(
-    ...getTilesAboveAndBelow(gridRows, gridDetails, tileX, tileY)
-  );
+  // tilesInLineOfSight.push(
+  //   ...getTilesAboveAndBelow(gridRows, gridDetails, tileX, tileY)
+  // );
   tilesInLineOfSight.push(
     ...getTilesPositive(gridRows, gridDetails, tileX, tileY)
   );
-  tilesInLineOfSight.push(
-    ...getTilesNegative(gridRows, gridDetails, tileX, tileY)
-  );
+  // tilesInLineOfSight.push(
+  //   ...getTilesNegative(gridRows, gridDetails, tileX, tileY)
+  // );
 
   return tilesInLineOfSight;
 }
