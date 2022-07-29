@@ -24,7 +24,7 @@ function constructGrid(): number[] {
         : rowLengths.push(calcRowLength);
     }
   }
-  return rowLengths;
+  return rowLengths; //79 cells
 }
 
 const Home: NextPage = () => {
@@ -32,7 +32,18 @@ const Home: NextPage = () => {
   const [totalTurns, setTotalTurns] = React.useState(0);
   const [depth, setDepth] = React.useState(0);
   const [enemies, setEnemies] = React.useState<Enemy[]>(allEnemies[0]);
+  const [projectionType, setProjectionType] = React.useState(0);
+  const [activeTiles, setActiveTiles] = React.useState<string[]>([]);
 
+  console.log(activeTiles);
+
+  function HandleActiveTiles(tile: string) {
+    if (activeTiles.includes(tile)) {
+      setActiveTiles(activeTiles.filter(t => t !== tile));
+    } else {
+      setActiveTiles([...activeTiles, tile]);
+    }
+  }
   useEffect(() => {
     if (turns > 0) {
       enemies.forEach(enemy => {
@@ -74,22 +85,36 @@ const Home: NextPage = () => {
   }
 
   function ConstructGridElement(gridRows: number[]) {
-    // const rowClassOld = 'flex flex-row justify-center align-center';
-    // const hexClassOld = 'bg-slate-800 border-50 w-10 h-10 rounded-full hover:bg-slate-400 text-center flex flex-col justify-center align-center text-white hover:text-black';
+    const hexBaseClass = '';
+    const rowClassTrue = 'flex flex-row align-center';
+    const hexClassTrue =
+      'w-10 h-10 rounded-full text-center flex flex-col justify-center align-center';
     const rowClass = 'flex flex-row justify-center align-center gap-12';
-    const hexClass =
-      'bg-slate-800 w-10 h-10 rounded-full hover:bg-slate-400 text-center flex flex-col justify-center align-center text-white hover:text-black my-[-8.5px]';
+    const hexClass = hexClassTrue + ' my-[-8.5px]';
+    const hexClassActive = 'bg-green-800 hover:bg-green-400 text-white';
+    const hexClassInactive =
+      'bg-slate-800 hover:bg-slate-400 text-white hover:text-black';
     return (
       <div className="flex flex-col content-center">
         {[...Array(gridRows.length - 1)].map((x, i) => {
           return (
-            <div className={rowClass} key={i}>
+            <div
+              className={projectionType === 0 ? rowClass : rowClassTrue}
+              key={i}
+            >
               {[...Array(gridRows[i + 1])].map((x, j) => {
                 return (
                   <div
                     key={i + ', ' + j}
-                    id={'hex-row-' + i + '-col-' + j}
-                    className={hexClass}
+                    id={'hex-x-' + j + '-y-' + i}
+                    className={
+                      (projectionType === 0 ? hexClass : hexClassTrue) +
+                      ' ' +
+                      (activeTiles.includes('hex-x-' + j + '-y-' + i)
+                        ? hexClassActive
+                        : hexClassInactive)
+                    }
+                    onClick={() => HandleActiveTiles('hex-x-' + j + '-y-' + i)}
                   >
                     <p style={{ userSelect: 'none' }}>{checkTile(i, j)}</p>
                   </div>
@@ -131,6 +156,16 @@ const Home: NextPage = () => {
               onClick={() => descend()}
             />
           </div>
+          <label className="text-white flex gap-2 justify-center">
+            Projection Type:
+            <select
+              className="bg-slate-900"
+              onChange={e => setProjectionType(parseInt(e.target.value))}
+            >
+              <option value={0}>In Game</option>
+              <option value={1}>True</option>
+            </select>
+          </label>
         </div>
       </main>
     </div>
