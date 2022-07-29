@@ -29,19 +29,21 @@ function constructGrid(): number[] {
 
 function ConstructGridElement(gridRows: number[]) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col content-center">
       {[...Array(gridRows.length)].map((x, i) => {
         return (
           <div
             className="flex flex-row justify-center
-           align-center"
+           align-center gap-7 "
           >
             {[...Array(gridRows[i])].map((x, i) => {
               return (
                 <div
                   key={i}
-                  className="bg-slate-800 border-50 w-10 h-10 rounded-full hover:bg-slate-400"
-                ></div>
+                  className="bg-slate-800 border-50 w-10 h-10 rounded-full hover:bg-slate-400 text-center flex flex-col justify-center align-center text-white hover:text-black my-[-8.5px]"
+                >
+                  $
+                </div>
               );
             })}
           </div>
@@ -78,6 +80,10 @@ const Home: NextPage = () => {
   }
 
   const gridRows = constructGrid();
+  const baseButton = 'rounded-lg px-2 py-1';
+  const blueButton =
+    baseButton +
+    ' text-white bg-blue-700 border-blue-700 hover:bg-blue-500 hover:border-blue-500';
 
   return (
     <div className={styles.container}>
@@ -87,36 +93,24 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
           {ConstructGridElement(gridRows)}
-          <div className="flex gap-2 justify-center">
-            <input
-              type={'button'}
-              className="text-white bg-blue-700 border-blue-700 rounded-lg px-2 py-1"
-              value={'Bash'}
-            />
-            <input
-              type={'button'}
-              value={'Hop'}
-              className="text-white bg-blue-700 border-blue-700 rounded-lg px-2 py-1"
-            />
-            <input
-              type={'button'}
-              value={'Throw'}
-              className="text-white bg-blue-700 border-blue-700 rounded-lg px-2 py-1"
-            />
+          <div className="flex justify-evenly mt-[8px] gap-1">
+            <input type={'button'} className={blueButton} value={'Bash'} />
+            <input type={'button'} value={'Hop'} className={blueButton} />
+            <input type={'button'} value={'Throw'} className={blueButton} />
           </div>
-          <div className="flex gap-2 justify-center">
+          <div className="flex justify-evenly gap-1">
             <input
               type={'button'}
-              className="text-white bg-blue-700 border-blue-700 rounded-lg px-2 py-1"
+              className={blueButton}
               value={'End Turn'}
               onClick={() => setTurns(turns + 1)}
             />
             <input
               type={'button'}
               value={'Descend'}
-              className="text-white bg-blue-700 border-blue-700 rounded-lg px-2 py-1"
+              className={blueButton}
               onClick={() => descend()}
             />
           </div>
