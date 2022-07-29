@@ -12,6 +12,8 @@ import {
 } from 'components/Hex/ConstructGrid';
 
 const Home: NextPage = () => {
+  const gridRows = constructGridArray();
+
   const [turns, setTurns] = React.useState(0);
   const [totalTurns, setTotalTurns] = React.useState(0);
   const [depth, setDepth] = React.useState(0);
@@ -19,26 +21,15 @@ const Home: NextPage = () => {
   const [projectionType, setProjectionType] = React.useState(0);
   const [activeTiles, setActiveTiles] = React.useState<string[]>([]);
 
-  function HandleActiveTiles(tile: string) {
+  function HandleActiveTiles(tile: string): void {
     if (activeTiles.includes(tile)) {
       setActiveTiles(activeTiles.filter(t => t !== tile));
     } else {
       setActiveTiles([...activeTiles, tile]);
     }
   }
-  useEffect(() => {
-    if (turns > 0) {
-      enemies.forEach(enemy => {
-        enemy.takeTurn();
-      });
-    }
-  }, [turns]);
 
-  useEffect(() => {
-    setEnemies(allEnemies[depth]);
-  }, [depth]);
-
-  function Descend() {
+  function Descend(): void {
     console.log('descending to level ' + (depth + 1));
     console.log('total turns: ' + (totalTurns + turns));
     setTotalTurns(totalTurns + turns);
@@ -57,7 +48,18 @@ const Home: NextPage = () => {
     );
   }
 
-  const gridRows = constructGridArray();
+  useEffect(() => {
+    if (turns > 0) {
+      enemies.forEach(enemy => {
+        enemy.takeTurn();
+      });
+    }
+  }, [turns]);
+
+  useEffect(() => {
+    setEnemies(allEnemies[depth]);
+  }, [depth]);
+
   const baseButton = 'rounded-lg px-2 py-1';
   const blueButton =
     baseButton +
