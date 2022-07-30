@@ -1,6 +1,7 @@
 import { Character, Enemy } from '@/classes/characterClasses';
 import assert from 'assert';
 import { constructGridArray } from 'components/Hex/ConstructGrid';
+import { getSurroundingTiles } from '../hex-line-of-sight/hexCalcLib';
 
 export const debug = true; //process.env.NEXT_PUBLIC_DEBUG === '1'; // no point in doing this yet
 const runTests = false; //process.env.NEXT_PUBLIC_RUN_TESTS === '1';
@@ -19,6 +20,8 @@ export const gridDetails = {
 };
 
 export const gridRows = constructGridArray();
+
+console.log(getSurroundingTiles('x2-y2'));
 
 export const ascii = {
   spartan: '@',

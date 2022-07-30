@@ -1,6 +1,8 @@
 import { Enemy } from '@/classes/characterClasses';
 import {
   getHexCoordinates,
+  getHexDistance,
+  getSurroundingTiles,
   getTileCoordinateNumbers,
   getTileCoordinateString,
   getTileNegativeSkew,
@@ -9,67 +11,27 @@ import {
 } from '@/lib/hex-line-of-sight/hexCalcLib';
 import { gridDetails } from '../constants/constants';
 
-function getHexDistanceCords(
-  a: number,
-  b: number,
-  c: number,
-  d: number,
-  e: number,
-  f: number
-) {
-  return Math.sqrt(
-    Math.pow(a - d, 2) + Math.pow(b - e, 2) + Math.pow(c - f, 2)
-  );
-}
-
-function getHexDistance(start: string, end: string) {
-  let a: number = -1;
-  let b: number = -1;
-  let c: number = -1;
-  let d: number = -1;
-  let e: number = -1;
-  let f: number = -1;
-  let { tileX: startX, tileY: startY } = getTileCoordinateNumbers(start);
-  let { tileX: endX, tileY: endY } = getTileCoordinateNumbers(end);
-  const {
-    posSkew: startPosSkew,
-    negSkew: startNegSkew,
-    vertCol: startVertCol
-  } = getHexCoordinates(startX, startY);
-  const {
-    posSkew: endPosSkew,
-    negSkew: endNegSkew,
-    vertCol: endVertCol
-  } = getHexCoordinates(endX, endY);
-  return getHexDistanceCords(
-    startPosSkew,
-    startNegSkew,
-    startVertCol,
-    endPosSkew,
-    endNegSkew,
-    endVertCol
-  );
-}
-
 export function findNextMove(
   actor: Enemy,
   start: string,
   end: string
 ): { tileX: number; tileY: number } {
-  let path: string[] = findPathBetween(start, end);
+  let path: string[] = getSurroundingTiles(start);
   path = path.filter(tile => tile !== start); // has to move!
-  path = path.filter(tile => getHexDistance(start, tile) < 2); // can't move more than 1
+  path = path.filter(tile => tile !== end); // cannot move onto target
+  // needs collision detection with other enemies as well
 
   let minimumDistance = Infinity;
   let indexOfMinimum = -1;
   path.forEach((tileString, index) => {
+    console.log(tileString);
     if (getHexDistance(end, tileString) < minimumDistance) {
       minimumDistance = getHexDistance(end, tileString);
       indexOfMinimum = index;
     }
   });
-  console.log(path);
-  console.log(indexOfMinimum);
+  console.log('path', path);
+  console.log('indexOfMinimum', indexOfMinimum);
   return getTileCoordinateNumbers(path[indexOfMinimum]);
 }
 

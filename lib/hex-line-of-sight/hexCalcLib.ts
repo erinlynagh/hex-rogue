@@ -1,4 +1,46 @@
-import { gridDetails, gridRows } from '../constants/constants';
+import { gridDetails, gridRows, ranges } from '../constants/constants';
+
+function getHexDistanceCords(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
+) {
+  return Math.sqrt(
+    Math.pow(a - d, 2) + Math.pow(b - e, 2) + Math.pow(c - f, 2)
+  );
+}
+
+export function getHexDistance(start: string, end: string) {
+  let a: number = -1;
+  let b: number = -1;
+  let c: number = -1;
+  let d: number = -1;
+  let e: number = -1;
+  let f: number = -1;
+  let { tileX: startX, tileY: startY } = getTileCoordinateNumbers(start);
+  let { tileX: endX, tileY: endY } = getTileCoordinateNumbers(end);
+  const {
+    posSkew: startPosSkew,
+    negSkew: startNegSkew,
+    vertCol: startVertCol
+  } = getHexCoordinates(startX, startY);
+  const {
+    posSkew: endPosSkew,
+    negSkew: endNegSkew,
+    vertCol: endVertCol
+  } = getHexCoordinates(endX, endY);
+  return getHexDistanceCords(
+    startPosSkew,
+    startNegSkew,
+    startVertCol,
+    endPosSkew,
+    endNegSkew,
+    endVertCol
+  );
+}
 
 export function getTileCoordinateNumbers(tile: string) {
   const tileX = parseInt(tile.split('-')[0].split('x')[1]);
@@ -10,12 +52,26 @@ export function getTileCoordinateString(x: number, y: number) {
   return 'x' + x + '-y' + y;
 }
 
+export function getSurroundingTiles(tile: string): string[] {
+  console.log('tile', tile);
+  let possibleTiles: string[] = [];
+  for (let i = 0; i < gridRows.length - 1; i++) {
+    for (let j = 0; j <= gridRows[i] - 1; j++) {
+      if (getHexDistance(tile, getTileCoordinateString(j, i)) < 2) {
+        possibleTiles.push(getTileCoordinateString(j, i));
+      }
+    }
+  }
+  return possibleTiles;
+}
+
 export function getHexCoordinates(startX: number, startY: number) {
   const posSkew = getTilePositiveSkew(startX, startY);
   const negSkew = getTileNegativeSkew(startX, startY);
   const vertCol = getTileVerticalColumn(startX, startY);
   return { posSkew, negSkew, vertCol };
 }
+
 export function getTileVerticalColumn(x: number, y: number): number {
   let position: number = -1;
 

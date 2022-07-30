@@ -42,7 +42,7 @@ function dummy(actor: Enemy) {
   console.log(actor.aptitude + ' is moving ' + actor.target.aptitude);
 }
 
-function moveArcher(actor: Enemy) {
+function moveTowards(actor: Enemy) {
   const start = getTileCoordinateString(actor.position.x, actor.position.y);
   const end = getTileCoordinateString(
     actor.target.position.x,
@@ -57,13 +57,13 @@ function moveArcher(actor: Enemy) {
 function getMove(actor: Enemy) {
   switch (actor.aptitude) {
     case aptitudes.knight:
-      return dummy;
+      return moveTowards;
     case aptitudes.wizard:
-      return dummy;
+      return moveTowards;
     case aptitudes.archer:
-      return moveArcher;
+      return moveTowards;
     default:
-      return moveArcher;
+      return moveTowards;
   }
 }
 
@@ -106,6 +106,10 @@ export class Enemy extends Character {
   attack(): boolean {
     if (this.countdown > 0) {
       this.countdown--;
+      return false;
+    }
+    if (true) {
+      // out of range
       return false;
     }
     this.countdown = this.cooldown;
