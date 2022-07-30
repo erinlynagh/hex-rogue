@@ -6,7 +6,7 @@ import {
   debug,
   globalDepth,
   gridRows,
-  setDepth
+  setGlobalDepth
 } from '@/lib/constants/constants';
 import { Enemy } from '@/classes/characterClasses';
 import { checkTileForRange, getTileAsciiArt } from 'components/Hex/CheckTiles';
@@ -125,7 +125,8 @@ const Home: NextPage = () => {
   }, [turns, enemies]);
 
   useEffect(() => {
-    setDepth(depth);
+    console.log('descending');
+    setGlobalDepth(depth);
     setEnemies(allEnemies[depth]);
   }, [depth]);
 
