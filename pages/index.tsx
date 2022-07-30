@@ -120,7 +120,7 @@ const Home: NextPage = () => {
       });
     }
     rerender();
-  }, [turns, enemies, allEnemies]);
+  }, [turns, enemies, allEnemies, forceRender]);
 
   useEffect(() => {
     setEnemies(allEnemies[depth]);
@@ -212,6 +212,7 @@ const Home: NextPage = () => {
           <a
             href="https://github.com/erinlynagh/hex-rogue"
             target="_blank"
+            rel="noreferrer"
             className="hover:underline"
           >
             github
