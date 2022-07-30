@@ -154,7 +154,7 @@ function getTilesAboveAndBelow(
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTileVerticalColumn(x, y);
   for (let i = y - 2 * range.max; i <= y + 2 * range.max; i++) {
-    for (let j = x - range.max; j < x + range.max; j++) {
+    for (let j = x - range.max; j <= x + range.max; j++) {
       if (tileVerticalPosition === getTileVerticalColumn(j, i)) {
         if (Math.abs(i - y) <= range.min) {
           continue;
@@ -211,7 +211,6 @@ function getTilesNegative(
 }
 
 export function getTilesInLineOfSight(
-  gridDetails: { maxHeight: number; maxWidth: number; steps: number },
   gridRows: number[],
   tile: string,
   range: { min: number; max: number } = { min: 0, max: 10 }

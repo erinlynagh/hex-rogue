@@ -42,14 +42,13 @@ function dummy(actor: Enemy) {
   console.log(actor.aptitude + ' is moving ' + actor.target.aptitude);
 }
 
-function moveTowards(actor: Enemy) {
+function moveTowards(actor: Enemy, depth: number) {
   const start = getTileCoordinateString(actor.position.x, actor.position.y);
   const end = getTileCoordinateString(
     actor.target.position.x,
     actor.target.position.y
   );
-  let { tileX, tileY } = findNextMove(actor, start, end);
-  console.log(tileX, tileY);
+  let { tileX, tileY } = findNextMove(start, end);
   actor.position.x = tileX;
   actor.position.y = tileY;
 }

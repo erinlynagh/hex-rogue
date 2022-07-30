@@ -4,11 +4,12 @@ import Head from 'next/head';
 import {
   allEnemies,
   debug,
-  gridDetails,
-  gridRows
+  globalDepth,
+  gridRows,
+  increaseDepth
 } from '@/lib/constants/constants';
 import { Enemy } from '@/classes/characterClasses';
-import { checkTilesLib } from 'components/Hex/CheckTiles';
+import { checkTileForRange, getTileAsciiArt } from 'components/Hex/CheckTiles';
 import { ConstructGridLib } from 'components/Hex/ConstructGrid';
 import { getTilesInLineOfSight } from '@/lib/hex-line-of-sight/hexCalcLib';
 import { findPathBetween } from '@/lib/pathfinding/pathfinding';
@@ -28,7 +29,14 @@ const Home: NextPage = () => {
     setForceRender(!forceRender);
   }
 
-  function HandleTileClick(tile: string): void {
+  function HandleTileClick(tile: string, hasChar: boolean): void {
+    if (hasChar) {
+      let range: { min: number; max: number } = checkTileForRange(tile)
+        ? checkTileForRange(tile)
+        : { min: 0, max: 10 };
+      let y = getTilesInLineOfSight(gridRows, tile, range);
+      setActiveTiles(y);
+    }
     if (debug) {
       console.log(tile);
     }
@@ -42,7 +50,7 @@ const Home: NextPage = () => {
       if (lastTile === tile) {
         setActiveTiles([]);
       } else {
-        let y = getTilesInLineOfSight(gridDetails, gridRows, tile);
+        let y = getTilesInLineOfSight(gridRows, tile);
         setActiveTiles(y);
       }
     } else if (debugMode === 2) {
@@ -94,7 +102,7 @@ const Home: NextPage = () => {
       gridRows,
       activeTiles,
       HandleTileClick,
-      checkTilesLib,
+      getTileAsciiArt,
       depth
     );
   }
@@ -112,11 +120,12 @@ const Home: NextPage = () => {
       enemies.forEach(enemy => {
         enemy.takeTurn();
       });
+      setActiveTiles([]);
     }
-    rerender();
-  }, [turns, enemies, allEnemies, forceRender]);
+  }, [turns, enemies, allEnemies]);
 
   useEffect(() => {
+    increaseDepth();
     setEnemies(allEnemies[depth]);
   }, [depth]);
 
@@ -174,8 +183,7 @@ const Home: NextPage = () => {
                   <option value={0}>Select Tiles</option>
                   <option value={1}>View Line of Sight</option>
                   <option value={2}>Pathfinding</option>
-                  <option value={3}>Enemy Movement</option>
-                  <option value={4}>Enemy Attack</option>
+                  <option value={3}>Enemy Interaction</option>
                   {/*<option value={5}>Player Movement</option>
                   <option value={6}>Player Attack</option>
                   <option value={7}>Upgrades</option> */}

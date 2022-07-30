@@ -10,25 +10,41 @@ import {
   getTileVerticalColumn
 } from '@/lib/hex-line-of-sight/hexCalcLib';
 import { gridDetails } from '../constants/constants';
+import { canAttack } from '../enemy-attacks';
 
 export function findNextMove(
-  actor: Enemy,
-  start: string,
-  end: string
+  actor: string,
+  target: string
 ): { tileX: number; tileY: number } {
-  let path: string[] = getSurroundingTiles(start);
-  path = path.filter(tile => tile !== start); // has to move!
-  path = path.filter(tile => tile !== end); // cannot move onto target
+  let path: string[] = getSurroundingTiles(actor);
+  path = path.filter(tile => tile !== actor); // has to move!
+  path = path.filter(tile => tile !== target); // cannot move onto target
   // needs collision detection with other enemies as well
 
   let minimumDistance = Infinity;
   let indexOfMinimum = -1;
+  let canAttackFlag: boolean = false;
   path.forEach((tileString, index) => {
-    if (getHexDistance(end, tileString) < minimumDistance) {
-      minimumDistance = getHexDistance(end, tileString);
+    if (getHexDistance(target, tileString) < minimumDistance) {
+      if (canAttack(actor, tileString, target)) {
+        canAttackFlag = true;
+      }
+      minimumDistance = getHexDistance(target, tileString);
       indexOfMinimum = index;
     }
   });
+  if (canAttackFlag) {
+    path.forEach((tileString, index) => {
+      if (
+        getHexDistance(target, tileString) > minimumDistance &&
+        canAttack(actor, tileString, target)
+      ) {
+        minimumDistance = getHexDistance(target, tileString);
+        indexOfMinimum = index;
+      }
+    });
+  }
+
   return getTileCoordinateNumbers(path[indexOfMinimum]);
 }
 

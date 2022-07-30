@@ -27,7 +27,7 @@ export function ConstructGridLib(
   projectionType: number,
   gridRows: number[],
   activeTiles: string[],
-  HandleActiveTiles: (tile: string) => void,
+  HandleActiveTiles: (tile: string, hasChar: boolean) => void,
   checkTile: (j: number, i: number, depth: number) => string,
   depth: number
 ): JSX.Element {
@@ -63,7 +63,12 @@ export function ConstructGridLib(
                     (showInGameProjection ? hexClass : hexClassTrue) +
                     (isActive ? hexClassActive : hexClassInactive)
                   }
-                  onClick={() => HandleActiveTiles(hexPositionId)}
+                  onClick={() =>
+                    HandleActiveTiles(
+                      hexPositionId,
+                      checkTile(i, j, depth) !== ''
+                    )
+                  }
                 >
                   <p style={{ userSelect: 'none' }}>{checkTile(i, j, depth)}</p>
                 </div>

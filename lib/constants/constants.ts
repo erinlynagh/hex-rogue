@@ -6,6 +6,10 @@ import { getSurroundingTiles } from '../hex-line-of-sight/hexCalcLib';
 export const debug = true; //process.env.NEXT_PUBLIC_DEBUG === '1'; // no point in doing this yet
 const runTests = false; //process.env.NEXT_PUBLIC_RUN_TESTS === '1';
 
+export let globalDepth = 0;
+export function increaseDepth() {
+  globalDepth++;
+}
 const gridMaxWidth = 5; // 5
 const gridMaxHeight = 21; // 21
 const effectiveMaxWidth =
@@ -44,7 +48,7 @@ export const cooldowns = {
 
 export const ranges = {
   spartan: { min: 1, max: 1 },
-  knight: { min: 1, max: 1 },
+  knight: { min: 0, max: 1 },
   wizard: { min: 1, max: 5 },
   archer: { min: 2, max: 5 }
 };
