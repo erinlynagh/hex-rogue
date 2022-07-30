@@ -47,11 +47,6 @@ const Home: NextPage = () => {
       }
     } else if (debugMode === 2) {
       HandlePathfinding();
-    } else if (debugMode === 3) {
-      console.log('press end turn');
-      console.log(
-        'one day I will implement a menu to place enemies on tiles with mouses'
-      );
     }
     if (lastTile !== tile) {
       setLastTile(tile);
@@ -105,8 +100,7 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    console.log(gridDetails);
-    console.log(gridRows);
+    console.log('welcome to the dungeon');
   }, []);
 
   useEffect(() => {

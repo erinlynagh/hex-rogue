@@ -21,8 +21,6 @@ export const gridDetails = {
 
 export const gridRows = constructGridArray();
 
-console.log(getSurroundingTiles('x2-y2'));
-
 export const ascii = {
   spartan: '@',
   knight: 'K',

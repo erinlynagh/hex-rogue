@@ -24,14 +24,11 @@ export function findNextMove(
   let minimumDistance = Infinity;
   let indexOfMinimum = -1;
   path.forEach((tileString, index) => {
-    console.log(tileString);
     if (getHexDistance(end, tileString) < minimumDistance) {
       minimumDistance = getHexDistance(end, tileString);
       indexOfMinimum = index;
     }
   });
-  console.log('path', path);
-  console.log('indexOfMinimum', indexOfMinimum);
   return getTileCoordinateNumbers(path[indexOfMinimum]);
 }
 
@@ -67,7 +64,6 @@ export function findPathBetween(start: string, end: string): string[] {
       startVertCol
     );
   } else {
-    console.log('cant see');
     const PositiveDifference = Math.abs(startPosSkew - endPosSkew);
     const NegativeDifference = Math.abs(startNegSkew - endNegSkew);
     const VerticalDifference = Math.abs(startVertCol - endVertCol);

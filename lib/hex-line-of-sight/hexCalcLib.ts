@@ -53,7 +53,6 @@ export function getTileCoordinateString(x: number, y: number) {
 }
 
 export function getSurroundingTiles(tile: string): string[] {
-  console.log('tile', tile);
   let possibleTiles: string[] = [];
   for (let i = 0; i < gridRows.length - 1; i++) {
     for (let j = 0; j <= gridRows[i] - 1; j++) {
@@ -196,7 +195,7 @@ function getTilesNegative(
 ) {
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTileNegativeSkew(x, y);
-  console.log('negative skew: ', tileVerticalPosition);
+  // console.log('negative skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
       if (tileVerticalPosition === getTileNegativeSkew(j, i)) {
