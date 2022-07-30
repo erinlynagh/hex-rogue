@@ -72,10 +72,6 @@ const Home: NextPage = () => {
   }
 
   function findPathBetween(start: string, end: string) {
-    console.log('start, end', start, end);
-    // get all positions for the two 2 tiles, in terms of vertical, positive and negative
-    // if any of them are the same, fill in all tiles on that axis
-    // if no 2 are the same, find the closest tile (that start can see) to end
     let tilesToActivate: string[] = [start, end];
     let { tileX: startX, tileY: startY } = getTileCoordinateNumbers(start);
     const startPosSkew = getTilePositiveSkew(startX, startY);
@@ -88,18 +84,15 @@ const Home: NextPage = () => {
     const seePos = startPosSkew === endPosSkew;
     const seeNeg = startNegSkew === endNegSkew;
     const seeVert = startVertCol === endVertCol;
-    // console.log('start coordinates', startPosSkew, startNegSkew, startVertCol);
-    // console.log('end coordinates', endPosSkew, endNegSkew, endVertCol);
+
     const canSee = seePos || seeNeg || seeVert;
     let sightDirection = -1;
     if (canSee) {
       sightDirection = seePos ? 0 : seeNeg ? 1 : 2;
     }
     if (canSee) {
-      console.log('they can see each other');
       if (sightDirection === 0) {
         // positive
-        // console.log('postive skew: ', tileVerticalPosition);
         for (let i = 0; i < gridDetails.maxHeight; i++) {
           for (let j = 0; j < gridDetails.maxWidth; j++) {
             if (startPosSkew === getTilePositiveSkew(j, i)) {
@@ -109,7 +102,6 @@ const Home: NextPage = () => {
         }
       } else if (sightDirection === 1) {
         // negative
-        // console.log('negative skew: ', tileVerticalPosition);
         for (let i = 0; i < gridDetails.maxHeight; i++) {
           for (let j = 0; j < gridDetails.maxWidth; j++) {
             if (startNegSkew === getTileNegativeSkew(j, i)) {
@@ -119,7 +111,6 @@ const Home: NextPage = () => {
         }
       } else if (sightDirection === 2) {
         // vertical
-        console.log('vertical skew: ', startVertCol);
         for (let i = 0; i < gridDetails.maxHeight; i++) {
           for (let j = 0; j < gridDetails.maxWidth; j++) {
             if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
@@ -130,8 +121,66 @@ const Home: NextPage = () => {
       }
     } else {
       console.log('they cannot see each other');
+      console.log(
+        'start coordinates',
+        startPosSkew,
+        startNegSkew,
+        startVertCol
+      );
+      console.log('end coordinates', endPosSkew, endNegSkew, endVertCol);
+      const PostiveDifference = Math.abs(startPosSkew - endPosSkew);
+      const NegativeDifference = Math.abs(startNegSkew - endNegSkew);
+      const VerticalDifference = Math.abs(startVertCol - endVertCol);
+      let Direction = -1;
+      let sightDirection = -1;
+      // find which one is the smallest
+      if (
+        PostiveDifference < NegativeDifference &&
+        PostiveDifference < VerticalDifference
+      ) {
+        Direction = startPosSkew;
+        sightDirection = 0;
+      } else if (NegativeDifference < VerticalDifference) {
+        Direction = startNegSkew;
+        sightDirection = 1;
+      } else {
+        Direction = startVertCol;
+        sightDirection = 2;
+      }
+      console.log('Direction', Direction);
+      console.log('SightDirection', sightDirection);
+      if (sightDirection === 0) {
+        // positive
+        for (let i = 0; i < gridDetails.maxHeight; i++) {
+          for (let j = 0; j < gridDetails.maxWidth; j++) {
+            if (startPosSkew === getTilePositiveSkew(j, i)) {
+              tilesToActivate.push(getTileCoordinateString(j, i));
+            }
+          }
+        }
+      } else if (sightDirection === 1) {
+        // negative
+        for (let i = 0; i < gridDetails.maxHeight; i++) {
+          for (let j = 0; j < gridDetails.maxWidth; j++) {
+            if (startNegSkew === getTileNegativeSkew(j, i)) {
+              tilesToActivate.push(getTileCoordinateString(j, i));
+            }
+          }
+        }
+      } else if (sightDirection === 2) {
+        // vertical
+        for (let i = 0; i < gridDetails.maxHeight; i++) {
+          for (let j = 0; j < gridDetails.maxWidth; j++) {
+            if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
+              tilesToActivate.push(getTileCoordinateString(j, i));
+            }
+          }
+        }
+      }
     }
-    console.log('tiles to activate: ', tilesToActivate);
+    if (!canSee) {
+      console.log('tiles to activate: ', tilesToActivate);
+    }
     return tilesToActivate;
   }
 
