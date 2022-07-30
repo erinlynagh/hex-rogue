@@ -60,8 +60,12 @@ const Home: NextPage = () => {
           setActiveTiles([tile]);
         } else {
           if (activeTiles.length === 1) {
-            let y = findPathBetween(lastTile, tile, gridRows);
-            setActiveTiles(y);
+            if (lastTile === '') {
+              setActiveTiles([]);
+            } else {
+              let y = findPathBetween(lastTile, tile, gridRows);
+              setActiveTiles(y);
+            }
           } else {
             setActiveTiles([...activeTiles, tile]);
           }
@@ -116,6 +120,8 @@ const Home: NextPage = () => {
     baseButton +
     ' text-white bg-blue-700 border-blue-700 hover:bg-blue-500 hover:border-blue-500';
 
+  console.log(lastTile);
+  console.log(activeTiles);
   return (
     <div className="bg-black">
       <Head>
