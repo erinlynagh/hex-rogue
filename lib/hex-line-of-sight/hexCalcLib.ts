@@ -132,7 +132,7 @@ function getTilesPositive(
 ) {
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTilePositiveSkew(x, y, gridRows, gridDetails);
-  console.log('postive skew: ', tileVerticalPosition);
+  // console.log('postive skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
       if (
@@ -159,7 +159,7 @@ function getTilesNegative(
 ) {
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTileNegativeSkew(x, y, gridRows[y + 1]);
-  console.log('negative skew: ', tileVerticalPosition);
+  // console.log('negative skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
       if (tileVerticalPosition === getTileNegativeSkew(j, i, gridRows[i + 1])) {

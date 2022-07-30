@@ -132,22 +132,20 @@ const Home: NextPage = () => {
                   <option value={1}>View Line of Sight</option>
                 </select>
               </label>
-              {debugMode === 0 && (
-                <>
-                  <label className="text-white flex gap-2 justify-center">
-                    Projection Type:
-                    <select
-                      className="bg-slate-900"
-                      onChange={e =>
-                        setProjectionType(parseInt(e.target.value))
-                      }
-                    >
-                      <option value={0}>In Game</option>
-                      <option value={1}>True</option>
-                    </select>
-                  </label>
-                </>
-              )}
+
+              <>
+                <label className="text-white flex gap-2 justify-center">
+                  Projection Type:
+                  <select
+                    className="bg-slate-900"
+                    onChange={e => setProjectionType(parseInt(e.target.value))}
+                  >
+                    <option value={0}>In Game</option>
+                    <option value={1}>True</option>
+                  </select>
+                </label>
+              </>
+
               <input
                 type={'button'}
                 value={'Reset Tiles'}
