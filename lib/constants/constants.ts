@@ -10,7 +10,6 @@ const effectiveMaxWidth =
   gridMaxWidth > gridMaxHeight / 2
     ? Math.ceil(gridMaxHeight / 2)
     : gridMaxWidth;
-
 export const gridDetails = {
   maxHeight: gridMaxHeight,
   maxWidth: effectiveMaxWidth,
