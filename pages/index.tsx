@@ -122,7 +122,7 @@ const Home: NextPage = () => {
       });
       setActiveTiles([]);
     }
-  }, [turns, enemies, allEnemies]);
+  }, [turns, enemies]);
 
   useEffect(() => {
     increaseDepth();
