@@ -52,7 +52,7 @@ export function getTilePositiveSkew(x: number, y: number): number {
     let max = i > gridDetails.maxWidth ? gridDetails.maxWidth : i;
     for (let j: number = 0; j <= max; j++) {
       let comp = 2 * (i - j) + gridDetails.maxWidth;
-      let triggerNumber = gridDetails.maxHeight - 2;
+      let triggerNumber = gridDetails.maxHeight - gridDetails.steps;
       if (comp >= triggerNumber) {
         comp -= 1 + (comp - triggerNumber) / 2;
       }
