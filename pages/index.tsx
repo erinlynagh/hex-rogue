@@ -160,6 +160,11 @@ const Home: NextPage = () => {
                   <option value={0}>Select Tiles</option>
                   <option value={1}>View Line of Sight</option>
                   <option value={2}>Pathfinding</option>
+                  {/* <option value={3}>Enemy Movement</option>
+                  <option value={4}>Enemy Attack</option>
+                  <option value={5}>Player Movement</option>
+                  <option value={6}>Player Attack</option>
+                  <option value={7}>Upgrades</option> */}
                 </select>
               </label>
 

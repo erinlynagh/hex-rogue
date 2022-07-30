@@ -41,6 +41,7 @@ export function getTileVerticalColumn(
   return position;
 }
 
+// not generic
 export function getTilePositiveSkew(x: number, y: number): number {
   let position = -1;
   for (
@@ -50,7 +51,7 @@ export function getTilePositiveSkew(x: number, y: number): number {
   ) {
     let max = i > gridDetails.maxWidth ? gridDetails.maxWidth : i;
     for (let j: number = 0; j <= max; j++) {
-      let comp = 2 * (i - j) + 5;
+      let comp = 2 * (i - j) + gridDetails.maxWidth;
       let triggerNumber = gridDetails.maxHeight - 2;
       if (comp >= triggerNumber) {
         comp -= 1 + (comp - triggerNumber) / 2;
@@ -66,13 +67,13 @@ export function getTilePositiveSkew(x: number, y: number): number {
 
 export function getTileNegativeSkew(x: number, y: number): number {
   let position = -1;
-
   if (x === 0 && y < gridDetails.maxWidth) {
     return y;
-  } else if (x === 1 && y === 2) {
-    return 1;
   } else if (x === y) {
     return 0;
+  }
+  if (y <= gridDetails.steps) {
+    return y - x;
   } else {
     if (gridDetails.maxHeight - gridDetails.maxWidth <= y) {
       y = gridDetails.maxHeight - gridDetails.maxWidth;
@@ -137,7 +138,7 @@ function getTilesNegative(
 ) {
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTileNegativeSkew(x, y);
-  // console.log('negative skew: ', tileVerticalPosition);
+  console.log('negative skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
       if (tileVerticalPosition === getTileNegativeSkew(j, i)) {
