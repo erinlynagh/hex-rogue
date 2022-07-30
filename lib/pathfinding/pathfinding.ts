@@ -5,6 +5,7 @@ import {
   getTilePositiveSkew,
   getTileVerticalColumn
 } from '@/lib/hex-line-of-sight/hexCalcLib';
+import { gridDetails } from '../constants/constants';
 
 export function findPathBetween(
   start: string,
