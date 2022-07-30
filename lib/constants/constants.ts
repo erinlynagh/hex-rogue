@@ -7,8 +7,8 @@ export const debug = true; //process.env.NEXT_PUBLIC_DEBUG === '1'; // no point 
 const runTests = false; //process.env.NEXT_PUBLIC_RUN_TESTS === '1';
 
 export let globalDepth = 0;
-export function increaseDepth() {
-  globalDepth++;
+export function setDepth(x: number) {
+  globalDepth = x;
 }
 const gridMaxWidth = 5; // 5
 const gridMaxHeight = 21; // 21
