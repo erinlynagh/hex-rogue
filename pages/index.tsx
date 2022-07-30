@@ -108,7 +108,7 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    console.log('welcome to the dungeon');
+    console.log('welcome to the dungeon >:)');
   }, []);
 
   useEffect(() => {
