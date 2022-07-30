@@ -9,6 +9,7 @@ import {
   ConstructGridLib
 } from 'components/Hex/ConstructGrid';
 import { getTilesInLineOfSight } from '@/lib/hex-line-of-sight/hexCalcLib';
+import { arraysEqual } from '@/lib/other/arrayEquals';
 
 const Home: NextPage = () => {
   const [gridRows, setGridRows] = React.useState<number[]>([]);
@@ -19,8 +20,9 @@ const Home: NextPage = () => {
   const [projectionType, setProjectionType] = React.useState(0);
   const [activeTiles, setActiveTiles] = React.useState<string[]>([]);
   const [debugMode, setDebugMode] = React.useState(0);
+  const [lastTile, setLastTile] = React.useState('');
 
-  function HandleActiveTiles(tile: string): void {
+  function HandleTileClick(tile: string): void {
     console.log(tile);
     if (debugMode === 0) {
       if (activeTiles.includes(tile)) {
@@ -29,8 +31,17 @@ const Home: NextPage = () => {
         setActiveTiles([...activeTiles, tile]);
       }
     } else if (debugMode === 1) {
-      let y = getTilesInLineOfSight(gridDetails, gridRows, tile);
-      setActiveTiles(y);
+      if (lastTile === tile) {
+        setActiveTiles([]);
+      } else {
+        let y = getTilesInLineOfSight(gridDetails, gridRows, tile);
+        setActiveTiles(y);
+      }
+    }
+    if (lastTile !== tile) {
+      setLastTile(tile);
+    } else {
+      setLastTile('');
     }
   }
 
@@ -47,7 +58,7 @@ const Home: NextPage = () => {
       projectionType,
       gridRows,
       activeTiles,
-      HandleActiveTiles,
+      HandleTileClick,
       checkTilesLib,
       depth
     );
