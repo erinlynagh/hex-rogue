@@ -10,6 +10,9 @@ import { getTileCoordinateNumbers } from '@/lib/hex-line-of-sight/hexCalcLib';
 
 export function getTileAsciiArt(i: number, j: number, depth: number): string {
   let char = '';
+  if (j === 2 && i == 4) {
+    return '\u2193';
+  }
   if (you.position.x === j && you.position.y === i) {
     char = ascii.spartan;
   } else {

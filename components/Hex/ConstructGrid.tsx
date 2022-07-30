@@ -70,7 +70,9 @@ export function ConstructGridLib(
                     )
                   }
                 >
-                  <p style={{ userSelect: 'none' }}>{checkTile(i, j, depth)}</p>
+                  <p style={{ userSelect: 'none' }} className="game-character">
+                    {checkTile(i, j, depth)}
+                  </p>
                 </div>
               );
             })}

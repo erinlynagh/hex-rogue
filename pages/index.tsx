@@ -94,6 +94,7 @@ const Home: NextPage = () => {
     setTotalTurns(totalTurns + turns);
     setTurns(0);
     setDepth(depth + 1);
+    setActiveTiles([]);
   }
 
   function ConstructHexGrid(): React.ReactNode {
@@ -169,7 +170,7 @@ const Home: NextPage = () => {
                       onClick={() => Descend()}
                     />
                   </div>
-                  <p>add collision checks and more advanced ai using range</p>
+                  <p>add collision checks for movement and range checks</p>
                 </div>
               )}
               <label className="text-white flex gap-2 justify-center">

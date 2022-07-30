@@ -63,6 +63,7 @@ const archer3 = new Enemy(aptitudes.archer, { x: 0, y: 5 }, you);
 const knight = new Enemy(aptitudes.knight, { x: 2, y: 2 }, you);
 const knight2 = new Enemy(aptitudes.knight, { x: 2, y: 5 }, you);
 export const allEnemies: Enemy[][] = [
+  [],
   [archer, knight],
   [knight, archer2, archer3],
   [archer, knight, knight2]
