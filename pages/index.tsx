@@ -91,52 +91,23 @@ const Home: NextPage = () => {
       sightDirection = seePos ? 0 : seeNeg ? 1 : 2;
     }
     if (canSee) {
-      if (sightDirection === 0) {
-        // positive
-        for (let i = 0; i < gridDetails.maxHeight; i++) {
-          for (let j = 0; j < gridDetails.maxWidth; j++) {
-            if (startPosSkew === getTilePositiveSkew(j, i)) {
-              tilesToActivate.push(getTileCoordinateString(j, i));
-            }
-          }
-        }
-      } else if (sightDirection === 1) {
-        // negative
-        for (let i = 0; i < gridDetails.maxHeight; i++) {
-          for (let j = 0; j < gridDetails.maxWidth; j++) {
-            if (startNegSkew === getTileNegativeSkew(j, i)) {
-              tilesToActivate.push(getTileCoordinateString(j, i));
-            }
-          }
-        }
-      } else if (sightDirection === 2) {
-        // vertical
-        for (let i = 0; i < gridDetails.maxHeight; i++) {
-          for (let j = 0; j < gridDetails.maxWidth; j++) {
-            if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
-              tilesToActivate.push(getTileCoordinateString(j, i));
-            }
-          }
-        }
-      }
-    } else {
-      console.log('they cannot see each other');
-      console.log(
-        'start coordinates',
+      DrawPath(
+        sightDirection,
         startPosSkew,
+        tilesToActivate,
         startNegSkew,
-        startVertCol
+        startVertCol,
+        gridRows
       );
-      console.log('end coordinates', endPosSkew, endNegSkew, endVertCol);
-      const PostiveDifference = Math.abs(startPosSkew - endPosSkew);
+    } else {
+      const PositiveDifference = Math.abs(startPosSkew - endPosSkew);
       const NegativeDifference = Math.abs(startNegSkew - endNegSkew);
       const VerticalDifference = Math.abs(startVertCol - endVertCol);
       let Direction = -1;
       let sightDirection = -1;
-      // find which one is the smallest
       if (
-        PostiveDifference < NegativeDifference &&
-        PostiveDifference < VerticalDifference
+        PositiveDifference < NegativeDifference &&
+        PositiveDifference < VerticalDifference
       ) {
         Direction = startPosSkew;
         sightDirection = 0;
@@ -147,40 +118,17 @@ const Home: NextPage = () => {
         Direction = startVertCol;
         sightDirection = 2;
       }
-      console.log('Direction', Direction);
-      console.log('SightDirection', sightDirection);
-      if (sightDirection === 0) {
-        // positive
-        for (let i = 0; i < gridDetails.maxHeight; i++) {
-          for (let j = 0; j < gridDetails.maxWidth; j++) {
-            if (startPosSkew === getTilePositiveSkew(j, i)) {
-              tilesToActivate.push(getTileCoordinateString(j, i));
-            }
-          }
-        }
-      } else if (sightDirection === 1) {
-        // negative
-        for (let i = 0; i < gridDetails.maxHeight; i++) {
-          for (let j = 0; j < gridDetails.maxWidth; j++) {
-            if (startNegSkew === getTileNegativeSkew(j, i)) {
-              tilesToActivate.push(getTileCoordinateString(j, i));
-            }
-          }
-        }
-      } else if (sightDirection === 2) {
-        // vertical
-        for (let i = 0; i < gridDetails.maxHeight; i++) {
-          for (let j = 0; j < gridDetails.maxWidth; j++) {
-            if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
-              tilesToActivate.push(getTileCoordinateString(j, i));
-            }
-          }
-        }
-      }
+
+      DrawPath(
+        sightDirection,
+        startPosSkew,
+        tilesToActivate,
+        startNegSkew,
+        startVertCol,
+        gridRows
+      );
     }
-    if (!canSee) {
-      console.log('tiles to activate: ', tilesToActivate);
-    }
+
     return tilesToActivate;
   }
 
@@ -271,7 +219,7 @@ const Home: NextPage = () => {
                     setDebugMode(parseInt(e.target.value));
                   }}
                 >
-                  <option value={0}>View Projections</option>
+                  <option value={0}>Select Tiles</option>
                   <option value={1}>View Line of Sight</option>
                   <option value={2}>Pathfinding</option>
                 </select>
@@ -305,3 +253,40 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+function DrawPath(
+  sightDirection: number,
+  startPosSkew: number,
+  tilesToActivate: string[],
+  startNegSkew: number,
+  startVertCol: number,
+  gridRows: number[]
+) {
+  if (sightDirection === 0) {
+    // positive
+    for (let i = 0; i < gridDetails.maxHeight; i++) {
+      for (let j = 0; j < gridDetails.maxWidth; j++) {
+        if (startPosSkew === getTilePositiveSkew(j, i)) {
+          tilesToActivate.push(getTileCoordinateString(j, i));
+        }
+      }
+    }
+  } else if (sightDirection === 1) {
+    // negative
+    for (let i = 0; i < gridDetails.maxHeight; i++) {
+      for (let j = 0; j < gridDetails.maxWidth; j++) {
+        if (startNegSkew === getTileNegativeSkew(j, i)) {
+          tilesToActivate.push(getTileCoordinateString(j, i));
+        }
+      }
+    }
+  } else if (sightDirection === 2) {
+    // vertical
+    for (let i = 0; i < gridDetails.maxHeight; i++) {
+      for (let j = 0; j < gridDetails.maxWidth; j++) {
+        if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
+          tilesToActivate.push(getTileCoordinateString(j, i));
+        }
+      }
+    }
+  }
+}
