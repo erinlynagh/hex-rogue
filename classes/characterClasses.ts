@@ -1,4 +1,11 @@
-import { aptitudes, cooldowns, ranges } from '@/lib/constants/constants';
+import {
+  aptitudes,
+  cooldowns,
+  gridRows,
+  ranges
+} from '@/lib/constants/constants';
+import { getTileCoordinateString } from '@/lib/hex-line-of-sight/hexCalcLib';
+import { findNextMove, findPathBetween } from '@/lib/pathfinding/pathfinding';
 
 let currentId = 0;
 
@@ -31,20 +38,32 @@ function getAttack(actor: Enemy): Function {
   }
 }
 
-function getMove(actor: Enemy) {
-  function dummy() {
-    console.log(actor.aptitude + ' is moving ' + actor.target.aptitude);
-  }
+function dummy(actor: Enemy) {
+  console.log(actor.aptitude + ' is moving ' + actor.target.aptitude);
+}
 
+function moveArcher(actor: Enemy) {
+  const start = getTileCoordinateString(actor.position.x, actor.position.y);
+  const end = getTileCoordinateString(
+    actor.target.position.x,
+    actor.target.position.y
+  );
+  let { tileX, tileY } = findNextMove(actor, start, end);
+  console.log(tileX, tileY);
+  actor.position.x = tileX;
+  actor.position.y = tileY;
+}
+
+function getMove(actor: Enemy) {
   switch (actor.aptitude) {
     case aptitudes.knight:
       return dummy;
     case aptitudes.wizard:
       return dummy;
     case aptitudes.archer:
-      return dummy;
+      return moveArcher;
     default:
-      return dummy;
+      return moveArcher;
   }
 }
 
@@ -80,7 +99,7 @@ export class Enemy extends Character {
 
   public takeTurn(): void {
     if (!this.attack()) {
-      this.move();
+      this.move(this);
     }
   }
 

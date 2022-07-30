@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { allEnemies, debug, gridDetails } from '@/lib/constants/constants';
+import {
+  allEnemies,
+  debug,
+  gridDetails,
+  gridRows
+} from '@/lib/constants/constants';
 import { Enemy } from '@/classes/characterClasses';
 import { checkTilesLib } from 'components/Hex/CheckTiles';
-import {
-  constructGridArray,
-  ConstructGridLib
-} from 'components/Hex/ConstructGrid';
+import { ConstructGridLib } from 'components/Hex/ConstructGrid';
 import { getTilesInLineOfSight } from '@/lib/hex-line-of-sight/hexCalcLib';
 import { findPathBetween } from '@/lib/pathfinding/pathfinding';
 
 const Home: NextPage = () => {
-  const [gridRows, setGridRows] = React.useState<number[]>([]);
   const [turns, setTurns] = React.useState(0);
   const [totalTurns, setTotalTurns] = React.useState(0);
   const [depth, setDepth] = React.useState(0);
@@ -41,6 +42,11 @@ const Home: NextPage = () => {
       }
     } else if (debugMode === 2) {
       HandlePathfinding();
+    } else if (debugMode === 3) {
+      console.log('press end turn');
+      console.log(
+        'one day I will implement a menu to place enemies on tiles with mouses'
+      );
     }
     if (lastTile !== tile) {
       setLastTile(tile);
@@ -63,8 +69,8 @@ const Home: NextPage = () => {
             if (lastTile === '') {
               setActiveTiles([]);
             } else {
-              let y = findPathBetween(lastTile, tile, gridRows);
-              setActiveTiles(y);
+              let y = findPathBetween(lastTile, tile);
+              setActiveTiles([...y, tile]);
             }
           } else {
             setActiveTiles([...activeTiles, tile]);
@@ -94,7 +100,6 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    setGridRows(constructGridArray());
     console.log(gridDetails);
     console.log(gridRows);
   }, []);
@@ -109,7 +114,7 @@ const Home: NextPage = () => {
         enemy.takeTurn();
       });
     }
-  }, [turns, enemies]);
+  }, [turns, enemies, allEnemies]);
 
   useEffect(() => {
     setEnemies(allEnemies[depth]);
@@ -120,8 +125,6 @@ const Home: NextPage = () => {
     baseButton +
     ' text-white bg-blue-700 border-blue-700 hover:bg-blue-500 hover:border-blue-500';
 
-  console.log(lastTile);
-  console.log(activeTiles);
   return (
     <div className="bg-black">
       <Head>
@@ -166,8 +169,8 @@ const Home: NextPage = () => {
                   <option value={0}>Select Tiles</option>
                   <option value={1}>View Line of Sight</option>
                   <option value={2}>Pathfinding</option>
-                  {/* <option value={3}>Enemy Movement</option>
-                  <option value={4}>Enemy Attack</option>
+                  <option value={3}>Enemy Movement</option>
+                  {/* <option value={4}>Enemy Attack</option>
                   <option value={5}>Player Movement</option>
                   <option value={6}>Player Attack</option>
                   <option value={7}>Upgrades</option> */}

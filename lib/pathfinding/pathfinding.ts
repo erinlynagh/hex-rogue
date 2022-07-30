@@ -1,4 +1,6 @@
+import { Enemy } from '@/classes/characterClasses';
 import {
+  getHexCoordinates,
   getTileCoordinateNumbers,
   getTileCoordinateString,
   getTileNegativeSkew,
@@ -7,20 +9,84 @@ import {
 } from '@/lib/hex-line-of-sight/hexCalcLib';
 import { gridDetails } from '../constants/constants';
 
-export function findPathBetween(
-  start: string,
-  end: string,
-  gridRows: number[]
+function getHexDistanceCords(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
 ) {
-  let tilesToActivate: string[] = [start, end];
+  return Math.sqrt(
+    Math.pow(a - d, 2) + Math.pow(b - e, 2) + Math.pow(c - f, 2)
+  );
+}
+
+function getHexDistance(start: string, end: string) {
+  let a: number = -1;
+  let b: number = -1;
+  let c: number = -1;
+  let d: number = -1;
+  let e: number = -1;
+  let f: number = -1;
   let { tileX: startX, tileY: startY } = getTileCoordinateNumbers(start);
-  const startPosSkew = getTilePositiveSkew(startX, startY);
-  const startNegSkew = getTileNegativeSkew(startX, startY);
-  const startVertCol = getTileVerticalColumn(startX, startY, gridRows);
   let { tileX: endX, tileY: endY } = getTileCoordinateNumbers(end);
-  const endPosSkew = getTilePositiveSkew(endX, endY);
-  const endNegSkew = getTileNegativeSkew(endX, endY);
-  const endVertCol = getTileVerticalColumn(endX, endY, gridRows);
+  const {
+    posSkew: startPosSkew,
+    negSkew: startNegSkew,
+    vertCol: startVertCol
+  } = getHexCoordinates(startX, startY);
+  const {
+    posSkew: endPosSkew,
+    negSkew: endNegSkew,
+    vertCol: endVertCol
+  } = getHexCoordinates(endX, endY);
+  return getHexDistanceCords(
+    startPosSkew,
+    startNegSkew,
+    startVertCol,
+    endPosSkew,
+    endNegSkew,
+    endVertCol
+  );
+}
+
+export function findNextMove(
+  actor: Enemy,
+  start: string,
+  end: string
+): { tileX: number; tileY: number } {
+  let path: string[] = findPathBetween(start, end);
+  path = path.filter(tile => tile !== start); // has to move!
+  path = path.filter(tile => getHexDistance(start, tile) < 2); // can't move more than 1
+
+  let minimumDistance = Infinity;
+  let indexOfMinimum = -1;
+  path.forEach((tileString, index) => {
+    if (getHexDistance(end, tileString) < minimumDistance) {
+      minimumDistance = getHexDistance(end, tileString);
+      indexOfMinimum = index;
+    }
+  });
+  console.log(path);
+  console.log(indexOfMinimum);
+  return getTileCoordinateNumbers(path[indexOfMinimum]);
+}
+
+export function findPathBetween(start: string, end: string): string[] {
+  let tilesToActivate: string[] = [];
+  let { tileX: startX, tileY: startY } = getTileCoordinateNumbers(start);
+  const {
+    posSkew: startPosSkew,
+    negSkew: startNegSkew,
+    vertCol: startVertCol
+  } = getHexCoordinates(startX, startY);
+  let { tileX: endX, tileY: endY } = getTileCoordinateNumbers(end);
+  const {
+    posSkew: endPosSkew,
+    negSkew: endNegSkew,
+    vertCol: endVertCol
+  } = getHexCoordinates(endX, endY);
   const seePos = startPosSkew === endPosSkew;
   const seeNeg = startNegSkew === endNegSkew;
   const seeVert = startVertCol === endVertCol;
@@ -36,10 +102,10 @@ export function findPathBetween(
       startPosSkew,
       tilesToActivate,
       startNegSkew,
-      startVertCol,
-      gridRows
+      startVertCol
     );
   } else {
+    console.log('cant see');
     const PositiveDifference = Math.abs(startPosSkew - endPosSkew);
     const NegativeDifference = Math.abs(startNegSkew - endNegSkew);
     const VerticalDifference = Math.abs(startVertCol - endVertCol);
@@ -64,8 +130,7 @@ export function findPathBetween(
       startPosSkew,
       tilesToActivate,
       startNegSkew,
-      startVertCol,
-      gridRows
+      startVertCol
     );
   }
 
@@ -77,8 +142,7 @@ function DrawPath(
   startPosSkew: number,
   tilesToActivate: string[],
   startNegSkew: number,
-  startVertCol: number,
-  gridRows: number[]
+  startVertCol: number
 ) {
   if (sightDirection === 0) {
     // positive
@@ -102,7 +166,7 @@ function DrawPath(
     // vertical
     for (let i = 0; i < gridDetails.maxHeight; i++) {
       for (let j = 0; j < gridDetails.maxWidth; j++) {
-        if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
+        if (startVertCol === getTileVerticalColumn(j, i)) {
           tilesToActivate.push(getTileCoordinateString(j, i));
         }
       }

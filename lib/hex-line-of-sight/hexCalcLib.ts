@@ -1,4 +1,4 @@
-import { gridDetails } from '../constants/constants';
+import { gridDetails, gridRows } from '../constants/constants';
 
 export function getTileCoordinateNumbers(tile: string) {
   const tileX = parseInt(tile.split('-')[0].split('x')[1]);
@@ -10,11 +10,13 @@ export function getTileCoordinateString(x: number, y: number) {
   return 'x' + x + '-y' + y;
 }
 
-export function getTileVerticalColumn(
-  x: number,
-  y: number,
-  gridRows: number[]
-): number {
+export function getHexCoordinates(startX: number, startY: number) {
+  const posSkew = getTilePositiveSkew(startX, startY);
+  const negSkew = getTileNegativeSkew(startX, startY);
+  const vertCol = getTileVerticalColumn(startX, startY);
+  return { posSkew, negSkew, vertCol };
+}
+export function getTileVerticalColumn(x: number, y: number): number {
   let position: number = -1;
 
   const inSteps =
@@ -95,10 +97,10 @@ function getTilesAboveAndBelow(
   range: { min: number; max: number }
 ) {
   let tilesAbove: string[] = [];
-  let tileVerticalPosition = getTileVerticalColumn(x, y, gridRows);
+  let tileVerticalPosition = getTileVerticalColumn(x, y);
   for (let i = y - 2 * range.max; i <= y + 2 * range.max; i++) {
     for (let j = x - range.max; j < x + range.max; j++) {
-      if (tileVerticalPosition === getTileVerticalColumn(j, i, gridRows)) {
+      if (tileVerticalPosition === getTileVerticalColumn(j, i)) {
         if (Math.abs(i - y) <= range.min) {
           continue;
         }
@@ -116,7 +118,7 @@ function getTilesPositive(
 ) {
   let tilesAbove: string[] = [];
   let tileVerticalPosition = getTilePositiveSkew(x, y);
-  // console.log('postive skew: ', tileVerticalPosition);
+  // console.log('positive skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
       if (tileVerticalPosition === getTilePositiveSkew(j, i)) {

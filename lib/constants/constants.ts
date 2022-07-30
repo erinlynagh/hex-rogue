@@ -1,8 +1,9 @@
 import { Character, Enemy } from '@/classes/characterClasses';
 import assert from 'assert';
+import { constructGridArray } from 'components/Hex/ConstructGrid';
 
 export const debug = true; //process.env.NEXT_PUBLIC_DEBUG === '1'; // no point in doing this yet
-const runTests = process.env.NEXT_PUBLIC_RUN_TESTS === '1';
+const runTests = false; //process.env.NEXT_PUBLIC_RUN_TESTS === '1';
 
 const gridMaxWidth = 5; // 5
 const gridMaxHeight = 21; // 21
@@ -10,11 +11,14 @@ const effectiveMaxWidth =
   gridMaxWidth > gridMaxHeight / 2
     ? Math.ceil(gridMaxHeight / 2)
     : gridMaxWidth;
+
 export const gridDetails = {
   maxHeight: gridMaxHeight,
   maxWidth: effectiveMaxWidth,
   steps: effectiveMaxWidth - 2 < 0 ? 0 : effectiveMaxWidth - 2
 };
+
+export const gridRows = constructGridArray();
 
 export const ascii = {
   spartan: '@',
@@ -34,7 +38,7 @@ export const cooldowns = {
   spartan: 0,
   knight: 0,
   wizard: 0,
-  archer: 0
+  archer: 5
 };
 
 export const ranges = {
