@@ -22,6 +22,11 @@ const Home: NextPage = () => {
   const [activeTiles, setActiveTiles] = React.useState<string[]>([]);
   const [debugMode, setDebugMode] = React.useState(0);
   const [lastTile, setLastTile] = React.useState('');
+  const [forceRender, setForceRender] = React.useState(false);
+
+  function rerender() {
+    setForceRender(!forceRender);
+  }
 
   function HandleTileClick(tile: string): void {
     if (debug) {
@@ -114,6 +119,7 @@ const Home: NextPage = () => {
         enemy.takeTurn();
       });
     }
+    rerender();
   }, [turns, enemies, allEnemies]);
 
   useEffect(() => {
@@ -143,20 +149,22 @@ const Home: NextPage = () => {
           {debug && (
             <div className="flex flex-col gap-2 border-2 border-white p-2 rounded-xl">
               <h1 className="text-2xl">Debug Settings</h1>
-              <div className="flex justify-center gap-5">
-                <input
-                  type={'button'}
-                  className={blueButton}
-                  value={'End Turn'}
-                  onClick={() => setTurns(turns + 1)}
-                />
-                <input
-                  type={'button'}
-                  value={'Descend'}
-                  className={blueButton}
-                  onClick={() => Descend()}
-                />
-              </div>
+              {debugMode === 3 && (
+                <div className="flex justify-center gap-5">
+                  <input
+                    type={'button'}
+                    className={blueButton}
+                    value={'End Turn'}
+                    onClick={() => setTurns(turns + 1)}
+                  />
+                  <input
+                    type={'button'}
+                    value={'Descend'}
+                    className={blueButton}
+                    onClick={() => Descend()}
+                  />
+                </div>
+              )}
               <label className="text-white flex gap-2 justify-center">
                 Debug Mode:
                 <select
