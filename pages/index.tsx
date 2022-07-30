@@ -186,7 +186,7 @@ const Home: NextPage = () => {
           )}
           <a
             href="https://github.com/erinlynagh/hex-rogue"
-            type="_blank"
+            target="_blank"
             className="hover:underline"
           >
             github
