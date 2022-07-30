@@ -150,19 +150,22 @@ const Home: NextPage = () => {
             <div className="flex flex-col gap-2 border-2 border-white p-2 rounded-xl">
               <h1 className="text-2xl">Debug Settings</h1>
               {debugMode === 3 && (
-                <div className="flex justify-center gap-5">
-                  <input
-                    type={'button'}
-                    className={blueButton}
-                    value={'End Turn'}
-                    onClick={() => setTurns(turns + 1)}
-                  />
-                  <input
-                    type={'button'}
-                    value={'Descend'}
-                    className={blueButton}
-                    onClick={() => Descend()}
-                  />
+                <div className="flex justify-center gap-2 flex-col">
+                  <div className="flex flex-row gap-5 justify-center">
+                    <input
+                      type={'button'}
+                      className={blueButton}
+                      value={'End Turn'}
+                      onClick={() => setTurns(turns + 1)}
+                    />
+                    <input
+                      type={'button'}
+                      value={'Descend'}
+                      className={blueButton}
+                      onClick={() => Descend()}
+                    />
+                  </div>
+                  <p>add collision checks and more advanced ai using range</p>
                 </div>
               )}
               <label className="text-white flex gap-2 justify-center">
@@ -178,8 +181,8 @@ const Home: NextPage = () => {
                   <option value={1}>View Line of Sight</option>
                   <option value={2}>Pathfinding</option>
                   <option value={3}>Enemy Movement</option>
-                  {/* <option value={4}>Enemy Attack</option>
-                  <option value={5}>Player Movement</option>
+                  <option value={4}>Enemy Attack</option>
+                  {/*<option value={5}>Player Movement</option>
                   <option value={6}>Player Attack</option>
                   <option value={7}>Upgrades</option> */}
                 </select>
