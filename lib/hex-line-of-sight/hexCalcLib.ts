@@ -1,20 +1,19 @@
 import { gridDetails } from '../constants/constants';
 
-function getTileCoordinateNumbers(tile: string) {
+export function getTileCoordinateNumbers(tile: string) {
   const tileX = parseInt(tile.split('-')[0].split('x')[1]);
   const tileY = parseInt(tile.split('-')[1].split('y')[1]);
   return { tileX, tileY };
 }
 
-function getTileCoordinateString(x: number, y: number) {
+export function getTileCoordinateString(x: number, y: number) {
   return 'x' + x + '-y' + y;
 }
 
-function getTileVerticalPosition(
+export function getTileVerticalColumn(
   x: number,
   y: number,
-  gridRows: number[],
-  gridDetails: { maxHeight: number; maxWidth: number; steps: number }
+  gridRows: number[]
 ): number {
   let position: number = -1;
 
@@ -42,12 +41,7 @@ function getTileVerticalPosition(
   return position;
 }
 
-function getTilePositiveSkew(
-  x: number,
-  y: number,
-  gridRows: number[],
-  gridDetails: { maxHeight: number; maxWidth: number; steps: number }
-): number {
+export function getTilePositiveSkew(x: number, y: number): number {
   let position = -1;
   for (
     let i: number = 0;
@@ -70,7 +64,7 @@ function getTilePositiveSkew(
   return position;
 }
 
-function getTileNegativeSkew(x: number, y: number, rowWidth: number): number {
+export function getTileNegativeSkew(x: number, y: number): number {
   let position = -1;
 
   if (x === 0 && y < gridDetails.maxWidth) {
@@ -95,24 +89,15 @@ function getTileNegativeSkew(x: number, y: number, rowWidth: number): number {
 
 function getTilesAboveAndBelow(
   gridRows: number[],
-  gridDetails: { maxHeight: number; maxWidth: number; steps: number },
   x: number,
   y: number,
   range: { min: number; max: number }
 ) {
   let tilesAbove: string[] = [];
-  let tileVerticalPosition = getTileVerticalPosition(
-    x,
-    y,
-    gridRows,
-    gridDetails
-  );
+  let tileVerticalPosition = getTileVerticalColumn(x, y, gridRows);
   for (let i = y - 2 * range.max; i <= y + 2 * range.max; i++) {
     for (let j = x - range.max; j < x + range.max; j++) {
-      if (
-        tileVerticalPosition ===
-        getTileVerticalPosition(j, i, gridRows, gridDetails)
-      ) {
+      if (tileVerticalPosition === getTileVerticalColumn(j, i, gridRows)) {
         if (Math.abs(i - y) <= range.min) {
           continue;
         }
@@ -124,21 +109,16 @@ function getTilesAboveAndBelow(
 }
 
 function getTilesPositive(
-  gridRows: number[],
-  gridDetails: { maxHeight: number; maxWidth: number; steps: number },
   x: number,
   y: number,
   range: { min: number; max: number }
 ) {
   let tilesAbove: string[] = [];
-  let tileVerticalPosition = getTilePositiveSkew(x, y, gridRows, gridDetails);
+  let tileVerticalPosition = getTilePositiveSkew(x, y);
   // console.log('postive skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
-      if (
-        tileVerticalPosition ===
-        getTilePositiveSkew(j, i, gridRows, gridDetails)
-      ) {
+      if (tileVerticalPosition === getTilePositiveSkew(j, i)) {
         if (Math.abs(i - y) < range.min) {
           continue;
         }
@@ -151,18 +131,16 @@ function getTilesPositive(
 }
 
 function getTilesNegative(
-  gridRows: number[],
-  gridDetails: { maxHeight: number; maxWidth: number; steps: number },
   x: number,
   y: number,
   range: { min: number; max: number }
 ) {
   let tilesAbove: string[] = [];
-  let tileVerticalPosition = getTileNegativeSkew(x, y, gridRows[y + 1]);
+  let tileVerticalPosition = getTileNegativeSkew(x, y);
   // console.log('negative skew: ', tileVerticalPosition);
   for (let i = y - range.max; i <= y + range.max; i++) {
     for (let j = x - range.max; j <= x + range.max; j++) {
-      if (tileVerticalPosition === getTileNegativeSkew(j, i, gridRows[i + 1])) {
+      if (tileVerticalPosition === getTileNegativeSkew(j, i)) {
         if (Math.abs(i - y) < range.min) {
           continue;
         }
@@ -184,14 +162,10 @@ export function getTilesInLineOfSight(
   const { tileX, tileY } = getTileCoordinateNumbers(tile);
   tilesInLineOfSight.push(getTileCoordinateString(tileX, tileY));
   tilesInLineOfSight.push(
-    ...getTilesAboveAndBelow(gridRows, gridDetails, tileX, tileY, range)
+    ...getTilesAboveAndBelow(gridRows, tileX, tileY, range)
   );
-  tilesInLineOfSight.push(
-    ...getTilesPositive(gridRows, gridDetails, tileX, tileY, range)
-  );
-  tilesInLineOfSight.push(
-    ...getTilesNegative(gridRows, gridDetails, tileX, tileY, range)
-  );
+  tilesInLineOfSight.push(...getTilesPositive(tileX, tileY, range));
+  tilesInLineOfSight.push(...getTilesNegative(tileX, tileY, range));
 
   return tilesInLineOfSight;
 }

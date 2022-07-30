@@ -8,7 +8,14 @@ import {
   constructGridArray,
   ConstructGridLib
 } from 'components/Hex/ConstructGrid';
-import { getTilesInLineOfSight } from '@/lib/hex-line-of-sight/hexCalcLib';
+import {
+  getTileCoordinateNumbers,
+  getTileCoordinateString,
+  getTileNegativeSkew,
+  getTilePositiveSkew,
+  getTilesInLineOfSight,
+  getTileVerticalColumn
+} from '@/lib/hex-line-of-sight/hexCalcLib';
 import { arraysEqual } from '@/lib/other/arrayEquals';
 
 const Home: NextPage = () => {
@@ -37,12 +44,95 @@ const Home: NextPage = () => {
         let y = getTilesInLineOfSight(gridDetails, gridRows, tile);
         setActiveTiles(y);
       }
+    } else if (debugMode === 2) {
+      if (activeTiles.includes(tile)) {
+        if (activeTiles.length >= 2) {
+          setActiveTiles([]);
+        } else {
+          setActiveTiles(activeTiles.filter(t => t !== tile));
+        }
+      } else {
+        if (activeTiles.length >= 2) {
+          setActiveTiles([tile]);
+        } else {
+          if (activeTiles.length === 1) {
+            let y = findPathBetween(lastTile, tile);
+            setActiveTiles(y);
+          } else {
+            setActiveTiles([...activeTiles, tile]);
+          }
+        }
+      }
     }
     if (lastTile !== tile) {
       setLastTile(tile);
     } else {
       setLastTile('');
     }
+  }
+
+  function findPathBetween(start: string, end: string) {
+    console.log('start, end', start, end);
+    // get all positions for the two 2 tiles, in terms of vertical, positive and negative
+    // if any of them are the same, fill in all tiles on that axis
+    // if no 2 are the same, find the closest tile (that start can see) to end
+    let tilesToActivate: string[] = [start, end];
+    let { tileX: startX, tileY: startY } = getTileCoordinateNumbers(start);
+    const startPosSkew = getTilePositiveSkew(startX, startY);
+    const startNegSkew = getTileNegativeSkew(startX, startY);
+    const startVertCol = getTileVerticalColumn(startX, startY, gridRows);
+    let { tileX: endX, tileY: endY } = getTileCoordinateNumbers(end);
+    const endPosSkew = getTilePositiveSkew(endX, endY);
+    const endNegSkew = getTileNegativeSkew(endX, endY);
+    const endVertCol = getTileVerticalColumn(endX, endY, gridRows);
+    const seePos = startPosSkew === endPosSkew;
+    const seeNeg = startNegSkew === endNegSkew;
+    const seeVert = startVertCol === endVertCol;
+    // console.log('start coordinates', startPosSkew, startNegSkew, startVertCol);
+    // console.log('end coordinates', endPosSkew, endNegSkew, endVertCol);
+    const canSee = seePos || seeNeg || seeVert;
+    let sightDirection = -1;
+    if (canSee) {
+      sightDirection = seePos ? 0 : seeNeg ? 1 : 2;
+    }
+    if (canSee) {
+      console.log('they can see each other');
+      if (sightDirection === 0) {
+        // positive
+        // console.log('postive skew: ', tileVerticalPosition);
+        for (let i = 0; i < gridDetails.maxHeight; i++) {
+          for (let j = 0; j < gridDetails.maxWidth; j++) {
+            if (startPosSkew === getTilePositiveSkew(j, i)) {
+              tilesToActivate.push(getTileCoordinateString(j, i));
+            }
+          }
+        }
+      } else if (sightDirection === 1) {
+        // negative
+        // console.log('negative skew: ', tileVerticalPosition);
+        for (let i = 0; i < gridDetails.maxHeight; i++) {
+          for (let j = 0; j < gridDetails.maxWidth; j++) {
+            if (startNegSkew === getTileNegativeSkew(j, i)) {
+              tilesToActivate.push(getTileCoordinateString(j, i));
+            }
+          }
+        }
+      } else if (sightDirection === 2) {
+        // vertical
+        console.log('vertical skew: ', startVertCol);
+        for (let i = 0; i < gridDetails.maxHeight; i++) {
+          for (let j = 0; j < gridDetails.maxWidth; j++) {
+            if (startVertCol === getTileVerticalColumn(j, i, gridRows)) {
+              tilesToActivate.push(getTileCoordinateString(j, i));
+            }
+          }
+        }
+      }
+    } else {
+      console.log('they cannot see each other');
+    }
+    console.log('tiles to activate: ', tilesToActivate);
+    return tilesToActivate;
   }
 
   function Descend(): void {
@@ -69,6 +159,10 @@ const Home: NextPage = () => {
     console.log(gridDetails);
     console.log(gridRows);
   }, []);
+
+  useEffect(() => {
+    setActiveTiles([]);
+  }, [debugMode]);
 
   useEffect(() => {
     if (turns > 0) {
@@ -130,6 +224,7 @@ const Home: NextPage = () => {
                 >
                   <option value={0}>View Projections</option>
                   <option value={1}>View Line of Sight</option>
+                  <option value={2}>Pathfinding</option>
                 </select>
               </label>
 
