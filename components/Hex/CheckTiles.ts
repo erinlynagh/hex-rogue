@@ -43,10 +43,14 @@ export function checkTileForRange(
   if (tileX === you.position.x && tileY === you.position.y) {
     range = ranges[you.aptitude as keyof typeof ranges];
   }
+  console.log(tileX, tileY);
   allEnemies[globalDepth].forEach(enemy => {
+    console.log(enemy.position.x, enemy.position.y);
     if (enemy.position.x === tileX && enemy.position.y === tileY) {
+      console.log('hit');
       range = ranges[enemy.aptitude as keyof typeof ranges];
     }
   });
+  console.log(range);
   return range;
 }
