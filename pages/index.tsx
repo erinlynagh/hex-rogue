@@ -170,8 +170,8 @@ const Home: NextPage = () => {
                     className="bg-slate-900"
                     onChange={e => setProjectionType(parseInt(e.target.value))}
                   >
-                    <option value={0}>In Game</option>
-                    <option value={1}>True</option>
+                    <option value={0}>Hexagon (Default)</option>
+                    <option value={1}>X,Y</option>
                   </select>
                 </label>
               </>
@@ -184,6 +184,13 @@ const Home: NextPage = () => {
               />
             </div>
           )}
+          <a
+            href="https://github.com/erinlynagh/hex-rogue"
+            type="_blank"
+            className="hover:underline"
+          >
+            github
+          </a>
         </div>
       </main>
     </div>

@@ -156,7 +156,7 @@ export function getTilesInLineOfSight(
   gridDetails: { maxHeight: number; maxWidth: number; steps: number },
   gridRows: number[],
   tile: string,
-  range: { min: number; max: number } = { min: 1, max: 10 }
+  range: { min: number; max: number } = { min: 0, max: 10 }
 ) {
   let tilesInLineOfSight: string[] = [];
   const { tileX, tileY } = getTileCoordinateNumbers(tile);
